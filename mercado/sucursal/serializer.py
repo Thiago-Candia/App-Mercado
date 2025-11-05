@@ -7,9 +7,10 @@ class SucursalSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class EmpleadoSerializer(serializers.ModelSerializer):
+    sucursal = SucursalSerializer(read_only=True)
     class Meta:
         model = Empleado
-        fields = '__all__'
+        fields ='__all__'
 
 
 
