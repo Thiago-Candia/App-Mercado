@@ -20,4 +20,9 @@ class Empleado(models.Model):
     telefono = models.IntegerField(max_length=15, default='')
     mail = models.CharField(max_length=50, default='')
     cargo = models.CharField(max_length=3, choices=Cargo.choices)
-    sucursal = models.ForeignKey(Sucursal, related_name='Empleados')
+    sucursal = models.ForeignKey(Sucursal, related_name='Empleados', on_delete=models.DO_NOTHING)
+    contratoPrincipio = models.DateField()
+    contratoFin = models.DateField()
+
+
+
