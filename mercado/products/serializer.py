@@ -13,11 +13,14 @@ class CategoriaSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class SubCategoriaSerializer(serializers.ModelSerializer):
+    ai = CategoriaSerializer(read_only=True)
     class Meta:
         model = SubCategoriaProducto
         fields = '__all__'
 
 class ProductSerializer(serializers.ModelSerializer):
+    categoria = serializers.StringRelatedField()
+    subcategoria = serializers.StringRelatedField()
     class Meta:
         model = Product
         fields = '__all__'

@@ -1,7 +1,6 @@
 def limpiar_texto(valor=None) -> str:
     return "" if valor is None else str(valor).strip()
 
-
 def colapsar_espacios(valor: str) -> str:
     return " ".join(str(valor).split())
 
@@ -66,7 +65,7 @@ def pedir_telefono_hasta_valido(valor=None) -> str:
 
 def pedir_dni_hasta_valido(valor=None) -> str:
     dni = solo_digitos(limpiar_texto(valor))
-    while not es_dni_valido(dni):
+    while not dni_valido(dni):
         print("DNI inválido.")
         dni = input("DNI (6 a 8 dígitos, sin puntos ni espacios): ")
         dni = solo_digitos(limpiar_texto(dni))
