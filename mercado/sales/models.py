@@ -13,10 +13,7 @@ class Cliente(models.Model):
     metodo_pago = models.CharField(max_length=3, choices=metodoPago.choices)
 
     def __str__(self):
-        return f"""
-        NOMBRE{self.nombre}
-        DNI:{self.dni} 
-        PAGO:{self.metodo_pago}"""
+        return f"""NOMBRE: {self.nombre} - DNI: {self.dni} - PAGO: {self.metodo_pago}"""
 
 
 class Caja(models.Model):
@@ -26,16 +23,17 @@ class Caja(models.Model):
         ACTIVA = 'ACT', 'Activa'
         CERRADA = 'CER', 'Cerrada'
     estado = models.CharField(max_length=3, choices=Estado.choices)
-
     def get_empleado(self):
-        return self.empleado
+        return self.empleado 
     def get_numeroCaja(self):
         return self.numeroCaja
+    def __str__(self):
+        return f'{self.numeroCaja} {self.empleado}' 
 
 class Venta(models.Model):
     total = models.DecimalField(max_digits=10, decimal_places=2)
-    caja = models.OneToOneField(Caja, on_delete=models.DO_NOTHING)
-    cliente = models.OneToOneField(Cliente, on_delete=models.DO_NOTHING)
+    caja = models.ForeignKey(Caja, on_delete=models.DO_NOTHING)
+    cliente = models.ForeignKey(Cliente, on_delete=models.DO_NOTHING)
     fecha = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
