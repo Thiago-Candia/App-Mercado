@@ -1,10 +1,8 @@
 from django.db import models
 from sucursal.models import Sucursal
 
-# Create your models here.
-
 class Catalogo(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, default='Catalogo')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     sucursal = models.ForeignKey(Sucursal, related_name='CatalogoProductos', on_delete=models.DO_NOTHING)
@@ -23,7 +21,7 @@ class SubCategoriaProducto(models.Model):
     name = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    categoria = models.ForeignKey(Catalogo, related_name='Subcategoria', on_delete=models.DO_NOTHING)
+    categoria = models.ForeignKey(CategoriaProducto, related_name='Subcategoria', on_delete=models.DO_NOTHING)
     
     def __str__(self):
         return self.name
@@ -38,7 +36,7 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     categoria = models.ForeignKey(CategoriaProducto, related_name='Producto', on_delete=models.DO_NOTHING) 
-    subcategoria = models.ForeignKey(SubCategoriaProducto, related_name='Producto', on_delete=models.DO_NOTHING)
+    subcategoria = models.ForeignKey(SubCategoriaProducto, related_name='Producto', on_delete=models.DO_NOTHING, blank=True)
 
     def __str__(self):
         return self.name
