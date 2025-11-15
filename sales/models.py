@@ -27,8 +27,7 @@ class Caja(models.Model):
 
 
 class Venta(models.Model):
-    caja = models.ForeignKey(Caja, on_delete=models.PROTECT) #No borrar una caja si posee ventas
-    fecha = models.DateTimeField(auto_now_add=True)
+    caja = models.ForeignKey(Caja, on_delete=models.PROTECT) 
     def calcular_total(self):
         return sum(detalle.subtotal() for detalle in self.detalles.all())
     
@@ -42,9 +41,8 @@ class DetalleVenta(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.DO_NOTHING)
     cantidad = models.IntegerField(default=1)
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-
+    fecha = models.DateTimeField(auto_now_add=True)
     def save(self, *args, **kwargs):
-        # 👇 AQUÍ: Si no se especifica precio_unitario, toma el del producto
         if not self.precio_unitario:
             self.precio_unitario = self.producto.price
         super().save(*args, **kwargs)
@@ -58,6 +56,5 @@ class DetalleVenta(models.Model):
         DEBITO = 'DEB', 'Debito'
         TRASNFERENCIA = 'TRA', 'Transferencia'
     metodo_pago = models.CharField(max_length=3, choices=metodoPago.choices, default=metodoPago.EFECTIVO)
-
     def get_detalle(self):
-        return f""" PRODUCTO: {self.producto} - CANTIDAD: {self.cantidad} {self.subtotal()}'"""
+        return f""" PRODUCTO: {self.producto} - CANTIDAD: {self.cantidad} {self.subtotal()} {self.metodo_pago}  {self.fecha}'"""
