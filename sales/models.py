@@ -1,14 +1,12 @@
 from django.db import models, transaction
 from sucursal.models import Empleado
 from products.models import Product
-
+from decimal import Decimal
 
 class Cliente(models.Model):
     nombre = models.CharField(max_length=20, blank=True)
     dni = models.IntegerField(blank=True)
-    pago = models.DecimalField(max_digits=10, decimal_places=2, default=0)  
 
-    
     def __str__(self):
         return f"""NOMBRE: {self.nombre.upper()} - DNI: {self.dni}"""
 
@@ -25,13 +23,13 @@ class Caja(models.Model):
     def get_numeroCaja(self):
         return self.numeroCaja
     def __str__(self):
-        return f'{self.numeroCaja} {self.empleado}' 
+        return f'NUMERO CAJA: {self.numeroCaja} - EMPLEADO: {self.empleado}' 
 
 
 class Venta(models.Model):
     numero_venta = models.IntegerField(unique=True, blank=False)
     caja = models.ForeignKey(Caja, on_delete=models.PROTECT) 
-    fecha = models.DateTimeField(auto_now=True)
+    fecha = models.DateTimeField(auto_now_add=True)
     cliente = models.ForeignKey(Cliente, on_delete=models.DO_NOTHING)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     class metodoPago(models.TextChoices):
@@ -51,7 +49,11 @@ class Venta(models.Model):
     def set_cliente(self):
         return self.cliente    
     def calcular_total(self):
-        return sum(detalle.subtotal() for detalle in self.detalles.all())
+        total = sum(detalle.subtotal() for detalle in self.detalles.all())
+        if self.metodo_pago == 'EFE':
+            des = float(total) * 0.05
+            total -= Decimal(des)
+        return total
     
     def mostrar_detalle(self):
         return (detalle.get_detalle() for detalle in self.detalles.all())
@@ -61,9 +63,6 @@ class Venta(models.Model):
     
     def mostrar_pago(self):
         return (self.metodo_pago)
-    
-    def ingresar_pago(self):
-        return self.cliente.pago
     
     def __str__(self):
         return f"{self.numero_venta}"

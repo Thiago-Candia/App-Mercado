@@ -26,7 +26,7 @@ class CobrarSerializer(serializers.Serializer):
     source='venta',
     write_only=True
     )
-    monto_recibido= serializers.DecimalField(
+    monto_recibido=serializers.DecimalField(
         max_digits=10,
         decimal_places=2,
         required=True
@@ -83,4 +83,12 @@ class DetalleVentaSerializer(serializers.ModelSerializer):
     )
     class Meta:
         model = DetalleVenta
-        fields = '__all__'
+        fields = ['venta_id','venta', 'producto','producto_id', 'cantidad']
+
+
+class VentasPorDiaSerializer(serializers.ModelSerializer):
+    fecha_filtrada = serializers.DateField(write_only=True)
+    class Meta:
+        model = Venta
+        fields = ['fecha','fecha_filtrada']
+

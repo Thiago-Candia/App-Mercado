@@ -10,7 +10,7 @@ class Sucursal(models.Model):
     mail = models.EmailField(blank=False, validators=[pedir_mail_hasta_valido])
     
     def __str__(self):
-        return f"{self.nombre.upper()} {self.ciudad} {self.direccion}"
+        return f"{self.nombre.upper()}, {self.ciudad}, {self.direccion}"
 
 class Empleado(models.Model):
     class Cargo(models.TextChoices):
