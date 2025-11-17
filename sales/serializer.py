@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from .models import Venta, Caja, Cliente, DetalleVenta, Product
 from sucursal.models import Empleado
+from rest_framework.decorators import action
+from django.db import transaction
 
 class CajaSerializer(serializers.ModelSerializer):
     empleado = serializers.StringRelatedField(read_only=True)
@@ -16,8 +18,19 @@ class CajaSerializer(serializers.ModelSerializer):
 class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cliente
-        fields = '__all__'
+        fields = ['nombre','dni']
 
+class CobrarSerializer(serializers.Serializer):
+    venta_id = serializers.PrimaryKeyRelatedField(
+    queryset=Venta.objects.all(),
+    source='venta',
+    write_only=True
+    )
+    monto_recibido= serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        required=True
+    )
 
 class VentaSerializer(serializers.ModelSerializer):
     caja = serializers.StringRelatedField(read_only=True)
@@ -26,12 +39,30 @@ class VentaSerializer(serializers.ModelSerializer):
     source='caja',
     write_only=True
     )
+    cliente = serializers.StringRelatedField(read_only=True)
+    cliente_id = serializers.PrimaryKeyRelatedField(
+        queryset= Cliente.objects.all(),
+        source='cliente',
+        write_only=True
+    )
+
     total = serializers.SerializerMethodField()
     def get_total(self, obj):
         return obj.calcular_total()
+    
     detalles = serializers.SerializerMethodField()
     def get_detalles(self, obj):
         return obj.mostrar_detalle()
+    
+    fecha = serializers.SerializerMethodField()
+    def get_fecha(self, obj):
+        return obj.mostrar_hora()
+    
+    metodo_pago = serializers.SerializerMethodField()
+    def get_metodo_pago(self, obj):
+        return obj.mostrar_pago()
+    
+
     class Meta:
         model = Venta
         fields = '__all__'

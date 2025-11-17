@@ -1,3 +1,5 @@
+from rest_framework import serializers
+
 def limpiar_texto(valor=None) -> str:
     return "" if valor is None else str(valor).strip()
 
@@ -43,30 +45,24 @@ def es_nombre_valido(valor=None) -> bool:
 def pedir_nombre_hasta_valido(valor=None) -> str:
     nombre = colapsar_espacios(limpiar_texto(valor))
     while not es_nombre_valido(nombre):
-        print("Nombre inválido.")
-        nombre = input("Vuelva a intentarlo: ")
-        nombre = colapsar_espacios(limpiar_texto(nombre))
+        raise serializers.ValidationError("nombre invalido")
     return nombre.upper()
 
 def pedir_mail_hasta_valido(valor=None) -> str:
     mail = (limpiar_texto(valor))
     while not es_mail_valido(mail):
-        print("Mail inválido.")
-        mail = limpiar_texto(input("Vuelva a intentarlo: "))
+        raise serializers.ValidationError("email invalido")
     return mail.lower()
 
 
 def pedir_telefono_hasta_valido(valor=None) -> str:
     telefono = solo_digitos(limpiar_texto(valor))
     while not telefono_valido(telefono):
-        print("Teléfono inválido.")
-        telefono = solo_digitos(limpiar_texto(input("Vuelva a intentarlo: ")))
+        raise serializers.ValidationError("Teléfono inválido.")
     return telefono
 
 def pedir_dni_hasta_valido(valor=None) -> str:
     dni = solo_digitos(limpiar_texto(valor))
     while not dni_valido(dni):
-        print("DNI inválido.")
-        dni = input("DNI (6 a 8 dígitos, sin puntos ni espacios): ")
-        dni = solo_digitos(limpiar_texto(dni))
+        raise serializers.ValidationError("DNI invalido (6 a 8 dígitos, sin puntos ni espacios): ")
     return dni

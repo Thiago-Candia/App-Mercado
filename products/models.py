@@ -28,15 +28,23 @@ class SubCategoriaProducto(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
-    codigo = models.IntegerField()
+    codigo = models.IntegerField(unique=True)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to='products/imagenes', null=True, blank=True)
     stock = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    categoria = models.ForeignKey(CategoriaProducto, related_name='Producto', on_delete=models.DO_NOTHING) 
-    subcategoria = models.ForeignKey(SubCategoriaProducto, related_name='Producto', on_delete=models.DO_NOTHING, blank=True)
-
+    categoria = models.ForeignKey(CategoriaProducto, related_name='productos', on_delete=models.DO_NOTHING) 
+    subcategoria = models.ForeignKey(SubCategoriaProducto, related_name='productos', on_delete=models.DO_NOTHING, blank=True)
+    
+    @property   
+    def precio_formateado(self):
+        return f"${self.price:,.2f}"
+    
+    @property
+    def esta_disponible(self):
+        return self.stock > 0 and f'{self.stock}'
+    
     def __str__(self):
-        return self.name
+        return f'{self.name} {self.precio_formateado}'
