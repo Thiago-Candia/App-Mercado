@@ -1,0 +1,47 @@
+
+
+
+
+.nav-home {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; 
+    align-items: center;
+    width: 100%;
+    background-color: #e3e3e3;
+    padding: 10px 20px;
+    border-bottom: 2px solid #ccc;
+}
+
+.nav-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+}
+
+.ul-nav-box {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    padding: 0;
+    margin: 0;
+}
+
+.ul-nav-box li a {
+    text-decoration: none;
+    font-size: 14px;
+    color: #333;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 4px;
+    transition: 0.2s;
+}
+
+/* Hover Effects */
+.ul-nav-box li a:hover {
+    background-color: #0476d9;
+    color: white;
+}
