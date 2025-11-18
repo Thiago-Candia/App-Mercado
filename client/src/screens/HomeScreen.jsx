@@ -33,10 +33,6 @@ const HomeScreen = () => {
     <div>
       <h2>Mejores servicios</h2>
     </div>
-
-    <div>
-
-    </div>
   </div>
 
 
