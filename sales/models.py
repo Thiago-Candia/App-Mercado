@@ -2,6 +2,7 @@ from django.db import models, transaction
 from sucursal.models import Empleado
 from products.models import Product
 from decimal import Decimal
+from datetime import time
 
 class Cliente(models.Model):
     nombre = models.CharField(max_length=20, blank=True)
@@ -27,10 +28,11 @@ class Caja(models.Model):
 
 
 class Venta(models.Model):
-    numero_venta = models.IntegerField(unique=True, blank=False)
+    numero_venta = models.IntegerField(unique=True, blank=True)
     caja = models.ForeignKey(Caja, on_delete=models.PROTECT) 
-    fecha = models.DateTimeField(auto_now_add=True)
-    cliente = models.ForeignKey(Cliente, on_delete=models.DO_NOTHING)
+    fecha = models.DateField(auto_now_add=True)
+    hora = models.TimeField(auto_now_add=True)
+    cliente = models.ForeignKey(Cliente, on_delete=models.DO_NOTHING, null=True, blank=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     class metodoPago(models.TextChoices):
         EFECTIVO = 'EFE', 'Efectivo'
@@ -45,10 +47,14 @@ class Venta(models.Model):
             self.numero_venta = (ultima_venta.numero_venta + 1) if ultima_venta else 1
             super().save(*args, **kwargs)
         
+    def get_info_venta(self):
+        return f'VENTA N°: {self.numero_venta} - FECHA: {self.fecha} - HORA: {self.hora} - CLIENTE: {self.cliente} - METODO PAGO: {self.metodo_pago}'
+
     @property
     def set_cliente(self):
         return self.cliente    
     def calcular_total(self):
+        Venta.save(self)
         total = sum(detalle.subtotal() for detalle in self.detalles.all())
         if self.metodo_pago == 'EFE':
             des = float(total) * 0.05
@@ -56,10 +62,11 @@ class Venta(models.Model):
         return total
     
     def mostrar_detalle(self):
+        Venta.save(self)
         return (detalle.get_detalle() for detalle in self.detalles.all())
     
     def mostrar_hora(self):
-        return f'{self.fecha.strftime('%d/%m/%Y %H:%M')}'
+        return f'{self.fecha} {self.hora}'
     
     def mostrar_pago(self):
         return (self.metodo_pago)

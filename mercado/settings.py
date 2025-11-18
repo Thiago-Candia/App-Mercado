@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'products',
     'sales',
     'sucursal',
+    'users',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -108,7 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+AUTH_USER_MODEL = 'users.User'
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 

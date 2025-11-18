@@ -43,14 +43,16 @@ class VentaViewSet(viewsets.ModelViewSet):
         fecha_filtrada = serializer.validated_data['fecha_filtrada']
         ventas = self.get_queryset().filter(fecha=fecha_filtrada)
 
-        if ventas.exists():
+        if ventas.count() == 0:
+            return Response({'status': 'fecha sin venta'}, status=status.HTTP_204_NO_CONTENT)
+        else:
             venta_serializer = self.get_serializer(ventas, many=True)
+            info = venta_serializer.data
+            detalles = venta_serializer.data
             ventas_list = venta_serializer.data
             ventas_count = len(ventas_list)
-            ventas_total = sum(venta['total'] for venta in ventas_list)
-            return Response({'fecha': fecha_filtrada, 'cantidad_ventas': ventas_count, 'total_ventas': ventas_total, 'ventas': venta_serializer.data}, status=status.HTTP_200_OK)
-        else:
-            return Response({'status': 'fecha sin venta'}, status=status.HTTP_204_NO_CONTENT)
+
+            return Response({'fecha': fecha_filtrada, 'cantidad_ventas': ventas_count, 'ventas': detalles}, status=status.HTTP_200_OK)
     
 class DetalleVentaViewSet(viewsets.ModelViewSet):
     serializer_class = DetalleVentaSerializer
