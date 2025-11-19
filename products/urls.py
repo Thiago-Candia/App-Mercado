@@ -2,6 +2,7 @@
 from django.urls import path, include
 from rest_framework import routers
 from . import views
+from .views import buscar_productos
 
 
 router = routers.DefaultRouter()
@@ -13,4 +14,5 @@ router.register(r'subcategoria', views.SubCategoriaViewSet, basename='subcategor
 
 urlpatterns = [
     path('api/', include(router.urls)),
+    path('productos/buscar/', buscar_productos),
 ]

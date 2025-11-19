@@ -7,3 +7,150 @@
 }
 
 
+.home-screen-article{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+
+
+.home-screen-component{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+
+
+
+/* --- ESTILOS GENERALES Y DE BASE --- */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f4f7f6; /* Un fondo gris muy claro */
+  margin: 0;
+  padding: 0;
+}
+
+/* Reseteo básico de box-sizing */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Contenedor principal (centrado y con fondo blanco) */
+.main-container {
+  max-width: 1200px;
+  margin: 20px auto; /* Centra el contenido */
+  padding: 25px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+/* --- ESTILOS DE LA BARRA DE BÚSQUEDA --- */
+.search-bar {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.search-form {
+  display: flex;
+  flex-wrap: wrap; /* Permite que se apilen en móviles */
+  align-items: flex-end; /* Alinea los elementos por abajo */
+  gap: 20px; /* Espacio entre los grupos */
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #555;
+}
+
+.form-group select,
+.form-group input {
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+/* Grupo especial para el input y el botón */
+.search-input-group {
+  flex-grow: 1; /* Hace que ocupe el espacio sobrante */
+  display: flex;
+}
+
+.search-input-group input {
+  flex-grow: 1;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: none;
+}
+
+.search-input-group button {
+  padding: 10px 15px;
+  border: 1px solid #007bff;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  font-size: 1.2rem;
+}
+
+.search-input-group button:hover {
+  background-color: #0056b3;
+}
+
+/* --- ESTILOS DE LA CUADRÍCULA DE PRODUCTOS --- */
+.product-list-container h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+/* ¡La magia de la cuadrícula! */
+.product-grid {
+  display: grid;
+  /* 4 columnas de igual tamaño */
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 25px; /* Espacio entre las tarjetas */
+}
+
+
+
+/* --- RESPONSIVE DESIGN (PARA MÓVILES Y TABLETS) --- */
+
+/* Tablets (ej. iPads) */
+@media (max-width: 992px) {
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas */
+  }
+}
+
+/* Móviles grandes / Tablets pequeñas */
+@media (max-width: 768px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas */
+  }
+  
+  .search-form {
+    flex-direction: column; /* Apila los filtros */
+    align-items: stretch; /* Ocupan todo el ancho */
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+  .product-grid {
+    grid-template-columns: 1fr; /* 1 columna */
+  }
+}

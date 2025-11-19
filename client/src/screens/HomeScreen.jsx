@@ -5,6 +5,7 @@ import HomeHeader from '../components/HomeHeader'
 import '../styles/styles.css'
 import HomeNav from '../components/HomeNav'
 import HomeArticle from '../components/HomeArticle'
+import HomeMain from '../components/HomeMain.jsx'
 
 const HomeScreen = () => {
 
@@ -18,25 +19,21 @@ const HomeScreen = () => {
       <HomeNav/>
 
 
-    {/* ARTICLE */}
-  <div>
-    <HomeArticle/>
+
+    <div className='home-screen-article'>
+      {/* ARTICLE */}
+      <div className='home-screen-component'>
+        <HomeArticle/>
+      </div>
+      {/* MAIN */}
+      <div className='home-screen-component'>
+        <HomeMain/>
+      </div>
+      <div className='home-screen-component'>
+        <h2>Mejores servicios</h2>
+      </div>
   </div>
 
-
-    {/* MAIN */}
-  <div>
-  </div>
-
-
-  <div>
-    <div>
-      <h2>Mejores servicios</h2>
-    </div>
-  </div>
-
-
-      <ProductList/>
 
     </div>
   )
