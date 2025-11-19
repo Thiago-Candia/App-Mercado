@@ -29,7 +29,6 @@ class SubCategoriaViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
-
     """ Filter Buscador por nombre """
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'description']

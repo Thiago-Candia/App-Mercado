@@ -53,6 +53,14 @@ class VentaSerializer(serializers.ModelSerializer):
     detalles = serializers.SerializerMethodField()
     def get_detalles(self, obj):
         return obj.mostrar_detalle()
+        try:
+            return obj.calcular_total() if obj.pk else []
+        except Exception:
+            return 0
+    
+    detalles = serializers.SerializerMethodField()
+    def get_detalles(self, obj):
+        return obj.mostrar_detalle() if obj.pk else []
     
     fecha = serializers.SerializerMethodField()
     def get_fecha(self, obj):
@@ -91,4 +99,13 @@ class VentasPorDiaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Venta
         fields = ['fecha','fecha_filtrada']
-
+    detalles = serializers.SerializerMethodField(read_only=True)
+    def get_detalles(self, obj):
+        return obj.mostrar_detalle() if obj.pk else []  
+    info = serializers.SerializerMethodField(read_only=True)
+    def get_info(self, obj):
+        return obj.get_info_venta()
+    
+    class Meta:
+        model = Venta
+        fields = ['fecha_filtrada', 'detalles', 'info']

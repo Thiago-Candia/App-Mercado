@@ -4,7 +4,6 @@ import './App.css'
 import HomeScreen from './screens/HomeScreen.jsx'
 import ProductCard from './components/ProductCard.jsx'
 import ProductPage from './screens/ProductPage.jsx'
-
 import './styles/styles.css'
 
 

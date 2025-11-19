@@ -5,6 +5,7 @@ from . import views
 from .views import buscar_productos
 
 
+
 router = routers.DefaultRouter()
 
 router.register(r'products', views.ProductViewSet, basename='product')

@@ -1,7 +1,6 @@
 import React from 'react'
 import ProductList from '../components/ProductList'
 import HomeHeader from '../components/HomeHeader'
-
 import '../styles/styles.css'
 import HomeNav from '../components/HomeNav'
 import HomeArticle from '../components/HomeArticle'
