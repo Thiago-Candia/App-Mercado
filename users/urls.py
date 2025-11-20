@@ -8,6 +8,6 @@ router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='user')
 urlpatterns = [
     path('api/', include(router.urls)),
-    re_path('register', views.register),
-    re_path('login', views.login)
+    re_path('register/', views.register),
+    re_path('login/', views.login)
     ]

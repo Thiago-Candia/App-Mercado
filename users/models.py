@@ -4,6 +4,8 @@ from rest_framework import serializers
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.hashers import make_password
 from .managers import UserManager
+
+
 # Create your models here.
 class User(AbstractBaseUser, PermissionsMixin):
     empleado =models.OneToOneField(Empleado, on_delete=models.CASCADE, related_name='user')

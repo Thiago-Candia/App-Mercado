@@ -1,13 +1,18 @@
 from rest_framework import serializers
 from .models import User, Empleado
 
+from django.contrib.auth.hashers import make_password
+
 class UserSerializer(serializers.ModelSerializer):
-    empleado = serializers.StringRelatedField(read_only=True)
-    empleado_id = serializers.PrimaryKeyRelatedField(
-    queryset=Empleado.objects.all(),
-    source='empleado',
-    write_only=True
-    )
+    password = serializers.CharField(write_only=True)
+
+    def create(self, validated_data):
+        passsword = validated_data.pop('password')
+        user = User(**validated_data)
+        user.password = make_password(passsword)
+        user.save()
+        return user
+
     class Meta:
         model = User
         fields = "__all__"

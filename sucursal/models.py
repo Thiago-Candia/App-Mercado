@@ -6,7 +6,7 @@ class Sucursal(models.Model):
     ciudad = models.CharField(max_length=50, blank=False, null=False)
     direccion = models.CharField(max_length=50, blank=False, null=False)
     nombre = models.CharField(max_length=50)
-    contacto = models.IntegerField(max_length=50)
+    contacto = models.IntegerField()
     mail = models.EmailField(blank=False, validators=[pedir_mail_hasta_valido])
     
     def __str__(self):

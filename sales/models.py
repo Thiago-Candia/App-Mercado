@@ -2,7 +2,7 @@ from django.db import models, transaction
 from sucursal.models import Empleado
 from products.models import Product
 from decimal import Decimal
-from datetime import time
+from datetime import timezone
 
 class Cliente(models.Model):
     nombre = models.CharField(max_length=20, blank=True)
@@ -35,7 +35,7 @@ class Venta(models.Model):
     numero_venta = models.IntegerField(unique=True, blank=True)
     caja = models.ForeignKey(Caja, on_delete=models.PROTECT) 
     fecha = models.DateField(auto_now_add=True)
-    hora = models.TimeField(auto_now_add=True)
+    hora = models.TimeField(default=timezone.now)
     cliente = models.ForeignKey(Cliente, on_delete=models.DO_NOTHING, null=True, blank=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     class metodoPago(models.TextChoices):
