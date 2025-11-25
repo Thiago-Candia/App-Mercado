@@ -19,7 +19,7 @@ class Caja(models.Model):
     empleado = models.OneToOneField(Empleado, on_delete=models.DO_NOTHING)
     fecha=models.DateField(auto_now_add=True)
     apertura = models.TimeField(blank=True, null=True)
-    cierre = models.TimeField(blank=True, null=True)
+    cierre = models.TimeField(blank=True, null=True) 
     class Estado(models.TextChoices):
         ACTIVA = 'ACT', 'Activa'
         CERRADA = 'CER', 'Cerrada'

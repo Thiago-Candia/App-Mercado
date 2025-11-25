@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 from .serializer import VentasPorMesSerializer, CajaSerializer, VentaSerializer, ClienteSerializer, DetalleVentaSerializer, DescuentoUnitarioSerializer, CobrarSerializer, VentasPorDiaSerializer, DescuentoSerializer
 from .models import Cliente, Caja, Venta, DetalleVenta
 from decimal import Decimal
+from datetime import date
 
 class CajaViewSet(viewsets.ModelViewSet):
     serializer_class = CajaSerializer
@@ -97,7 +98,6 @@ class VentaViewSet(viewsets.ModelViewSet):
         
         if ventas.count() == 0:
             return Response({'status': 'fecha sin venta'}, status=status.HTTP_204_NO_CONTENT)
-        
 
         venta_serializer = self.get_serializer(ventas, many=True)
         detalles = venta_serializer.data
@@ -111,6 +111,17 @@ class VentaViewSet(viewsets.ModelViewSet):
             'total_mes': float(total_mes),
             'ventas': detalles
         }, status=status.HTTP_200_OK)
+
+        @action(detail=False, methods=["get", "post"], serializer_class=VentasPorDiaSerializer)
+        def caja_apertura(self, request, pk=None):
+            serializer = VentasPorDiaSerializer(data=request.data)
+
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            fecha_filtrada = date.today()
+            ventas = self.get_queryset().filter(fecha=fecha_filtrada)
+
 
 class DetalleVentaViewSet(viewsets.ModelViewSet):
     serializer_class = DetalleVentaSerializer
