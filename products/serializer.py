@@ -1,3 +1,4 @@
+import decimal
 from rest_framework import serializers
 from .models import Product
 from .models import Product, Catalogo, CategoriaProducto, SubCategoriaProducto
@@ -45,3 +46,20 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+
+class ProductoPrecioNuevoSerializer(serializers.Serializer):
+    product_id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(),
+    source='producto',
+    write_only=True
+    )
+    nuevo_precio = serializers.DecimalField(max_digits=10, decimal_places=2)
+
+class ProductoStockNuevoSerializer(serializers.Serializer):
+    product_id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(),
+    source='producto',
+    write_only=True
+    )
+    nuevo_stock = serializers.IntegerField()
+
+class CodigoSerializer(serializers.Serializer):
+    codigo_filtrado = serializers.IntegerField()

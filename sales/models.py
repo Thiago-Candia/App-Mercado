@@ -1,4 +1,6 @@
+from _winapi import NULL
 from django.db import models, transaction
+
 from sucursal.models import Empleado
 from products.models import Product
 from decimal import Decimal
@@ -15,6 +17,9 @@ class Cliente(models.Model):
 class Caja(models.Model):
     numeroCaja = models.IntegerField(unique=True)
     empleado = models.OneToOneField(Empleado, on_delete=models.DO_NOTHING)
+    fecha=models.DateField(auto_now_add=True)
+    apertura = models.TimeField(blank=True, null=True)
+    cierre = models.TimeField(blank=True, null=True)
     class Estado(models.TextChoices):
         ACTIVA = 'ACT', 'Activa'
         CERRADA = 'CER', 'Cerrada'
@@ -40,29 +45,33 @@ class Venta(models.Model):
         DEBITO = 'DEB', 'Debito'
         TRASNFERENCIA = 'TRA', 'Transferencia'
     metodo_pago = models.CharField(max_length=3, choices=metodoPago.choices, default=metodoPago.EFECTIVO)
-
+    class estadoVenta(models.TextChoices):
+        FINALIZADA = "FIN", 'Finalizada',
+        EN_PROCESO = "PRC", 'En proceso',
+        PENDIENTE = 'PEN', 'Pendiente'
+    estado_venta = models.CharField(max_length=3, choices=estadoVenta.choices, default=estadoVenta.PENDIENTE)
     def save(self, *args, **kwargs):
         if not self.numero_venta:
             ultima_venta = Venta.objects.all().order_by('-numero_venta').first()
             self.numero_venta = (ultima_venta.numero_venta + 1) if ultima_venta else 1
-            super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
         
+    def convertir_fecha(self, anio, mes):
+        return self.objects.filter(fecha__year=anio, fecha__month=mes)
+
+
     def get_info_venta(self):
         return f'VENTA N°: {self.numero_venta} - FECHA: {self.fecha} - HORA: {self.hora} - CLIENTE: {self.cliente} - METODO PAGO: {self.metodo_pago}'
 
     @property
     def set_cliente(self):
-        return self.cliente    
+        return self.cliente   
+
     def calcular_total(self):
-        Venta.save(self)
         total = sum(detalle.subtotal() for detalle in self.detalles.all())
-        if self.metodo_pago == 'EFE':
-            des = float(total) * 0.05
-            total -= Decimal(des)
         return total
-    
+
     def mostrar_detalle(self):
-        Venta.save(self)
         return (detalle.get_detalle() for detalle in self.detalles.all())
     
     def mostrar_hora(self):
@@ -81,13 +90,19 @@ class DetalleVenta(models.Model):
     producto = models.ForeignKey(Product, on_delete=models.CASCADE)
     cantidad = models.IntegerField(default=1)
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    descuento = models.IntegerField(default=0, blank=True, null=True)
     def save(self, *args, **kwargs):
         if not self.precio_unitario:
             self.precio_unitario = self.producto.price
         super().save(*args, **kwargs)
 
     def subtotal(self):
-        return self.precio_unitario * self.cantidad
+        subtotal = self.precio_unitario * self.cantidad
+        descuento = self.descuento
+        if descuento:
+            descuento = subtotal * (Decimal(descuento) / Decimal(100))
+            subtotal = subtotal - descuento
+        return subtotal
     
     def get_detalle(self):
-        return f""" PRODUCTO: {self.producto} - CANTIDAD: {self.cantidad} {self.subtotal()}'"""
+        return f""" PRODUCTO: {self.producto} - CANTIDAD: {self.cantidad} - SUBTOTAL: {self.subtotal()}'"""

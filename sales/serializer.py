@@ -1,3 +1,4 @@
+from typing import Required
 from rest_framework import serializers
 from .models import Venta, Caja, Cliente, DetalleVenta, Product
 from sucursal.models import Empleado
@@ -13,7 +14,12 @@ class CajaSerializer(serializers.ModelSerializer):
     )
     class Meta:
         model = Caja
-        fields = ['numeroCaja', 'empleado', 'empleado_id']
+        fields = ['numeroCaja', 'empleado', 'empleado_id', 'apertura', 'cierre']
+        extra_kwargs= {
+        "fecha": {"read_only": True},
+        "apertura":{"read_only": True},
+        "cierre":{"read_only": True}
+    }
 
 class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -32,6 +38,16 @@ class CobrarSerializer(serializers.Serializer):
         required=True
     )
 
+class DescuentoSerializer(serializers.Serializer):
+    venta_id = serializers.PrimaryKeyRelatedField(
+    queryset=Venta.objects.all(),
+    source='venta',
+    write_only=True
+    )
+    descuento = serializers.IntegerField(
+    required=False
+    )
+
 class VentaSerializer(serializers.ModelSerializer):
     caja = serializers.StringRelatedField(read_only=True)
     caja_id = serializers.PrimaryKeyRelatedField(
@@ -43,13 +59,16 @@ class VentaSerializer(serializers.ModelSerializer):
     cliente_id = serializers.PrimaryKeyRelatedField(
         queryset= Cliente.objects.all(),
         source='cliente',
-        write_only=True
+        write_only=True,
+        required=False
     )
-
     total = serializers.SerializerMethodField()
     def get_total(self, obj):
         try:
-            return obj.calcular_total() if obj.pk else []
+            if obj.total > 0:
+                return obj.total
+            elif obj.total <= 0: 
+                return obj.calcular_total() if obj.pk else []
         except Exception:
             return 0
     
@@ -65,10 +84,25 @@ class VentaSerializer(serializers.ModelSerializer):
     def get_metodo_pago(self, obj):
         return obj.mostrar_pago()
     
-
+    estado_venta = serializers.SerializerMethodField()
+    def get_estado_venta(self, obj):
+        return obj.estado_venta
     class Meta:
         model = Venta
-        fields = '__all__'
+        fields = ['caja_id', 'caja', 'cliente_id', 'cliente', 'numero_venta', 'total', 'detalles', 'fecha', 'metodo_pago', 'estado_venta'] 
+        extra_kwargs= {
+            "total": {"read_only": True},
+            "numero_venta":{"read_only": True}
+        }
+class DescuentoUnitarioSerializer(serializers.Serializer):
+    detalleventa_id = serializers.PrimaryKeyRelatedField(
+    queryset=Venta.objects.all(),
+    source='venta',
+    write_only=True
+    )
+    descuento = serializers.IntegerField(
+    required=False
+    )
 
 
 class DetalleVentaSerializer(serializers.ModelSerializer):
@@ -84,9 +118,12 @@ class DetalleVentaSerializer(serializers.ModelSerializer):
     source='producto',
     write_only=True
     )
+    subtotal = serializers.SerializerMethodField(read_only=True)
+    def get_subtotal(self, obj):
+        return obj.subtotal()
     class Meta:
         model = DetalleVenta
-        fields = ['venta_id','venta', 'producto','producto_id', 'cantidad']
+        fields = ['venta_id','venta', 'producto','producto_id', 'cantidad', 'descuento', 'subtotal']
 
 
 class VentasPorDiaSerializer(serializers.ModelSerializer):
@@ -94,10 +131,32 @@ class VentasPorDiaSerializer(serializers.ModelSerializer):
     detalles = serializers.SerializerMethodField(read_only=True)
     def get_detalles(self, obj):
         return obj.mostrar_detalle() if obj.pk else []  
+    total = serializers.SerializerMethodField(read_only=True)
+    def get_total(self, obj):
+        return obj.calcular_total()
     info = serializers.SerializerMethodField(read_only=True)
     def get_info(self, obj):
         return obj.get_info_venta()
     
     class Meta:
         model = Venta
-        fields = ['fecha_filtrada', 'detalles', 'info']
+        fields = ['fecha_filtrada', 'detalles', 'info', 'total']
+
+
+class VentasPorMesSerializer(serializers.ModelSerializer):
+    mes_filtrada = serializers.IntegerField(write_only=True)
+    anio_filtrada = serializers.IntegerField(write_only=True)
+    def convertir_fecha(self, obj):
+        return obj.objects.filter(fecha__year=anio_filtrada, fecha__month=mes_filtrada)
+    detalles = serializers.SerializerMethodField(read_only=True)
+    def get_detalles(self, obj):
+        return obj.mostrar_detalle() if obj.pk else []  
+    info = serializers.SerializerMethodField(read_only=True)
+    def get_info(self, obj):
+        return obj.get_info_venta()
+    total = serializers.SerializerMethodField(read_only=True)
+    def get_total(self, obj):
+        return obj.calcular_total()
+    class Meta:
+        model = Venta
+        fields = ['anio_filtrada', 'mes_filtrada', 'detalles', 'info', 'total']
