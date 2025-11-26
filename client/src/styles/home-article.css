@@ -1,0 +1,38 @@
+.catalogo-container {
+  background-color: #f4f4f4;
+  padding: 15px 20px;
+  width: 250px;
+  border: 1px solid #ddd;
+  margin: 10px;
+  border-radius: 4px;
+}
+
+.catalogo-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #004a80;
+  margin-bottom: 10px;
+}
+
+.catalogo-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.catalogo-list li {
+  font-size: 13px;
+  margin: 6px 0;
+  padding-left: 15px;
+  position: relative;
+}
+
+/* Agregamos los iconos de flecha negra */
+.catalogo-list li::before {
+  content: "▶";
+  font-size: 10px;
+  position: absolute;
+  left: 0;
+  top: 3px;
+  color: #000;
+}

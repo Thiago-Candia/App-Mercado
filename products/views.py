@@ -6,7 +6,14 @@ from .serializer import ProductSerializer, CatalogoSerializer, CategoriaSerializ
 from .models import Product, Catalogo, CategoriaProducto, SubCategoriaProducto
 from rest_framework.decorators import action
 from django.db import transaction
+
+from django.db.models import Q
+
+
+""" PARA BUSCAR PRODUCTOS POR NOMBRE """
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import filters
 
 # Create your views here.
 
@@ -50,7 +57,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         producto.save()
         return Response({'stock': nuevo_stock})
     
-    @action(detail=False, methods=['get', 'post'], serializer_class=CodigoSerializer)
+"""     @action(detail=False, methods=['get', 'post'], serializer_class=CodigoSerializer)
     def buscar_producto(self, request, pk=None):
         serializer = CodigoSerializer(data=request.data)
         if not serializer.is_valid():
@@ -59,5 +66,20 @@ class ProductViewSet(viewsets.ModelViewSet):
         producto = self.get_queryset().get(codigo=codigo_filtrado)
         product_serializer = ProductSerializer(producto)
         product = product_serializer.data
-        return Response({'producto' : product})
+        return Response({'producto' : product}) """
+
+
+""" FUNCION GLOBAL PARA BUSCAR PRODUCTOS POR NOMBRE """
+@api_view(['GET'])
+def buscar_productos(request):
+    query = request.GET.get('search', '').strip()
+
+    if query == '':
+        return Response([])
+    
+    productos = Product.objects.filter(
+        Q(name__icontains=query) | Q(codigo__icontains=query)
+    )
+    serializer = ProductSerializer(productos, many=True)
+    return Response(serializer.data)
 

@@ -6,5 +6,4 @@ const productsApi = axios.create({
 
 export const getAllProducts = () => productsApi.get('/')
 
-
 export const getProduct = (id) => productsApi.get(`/${id}/`)

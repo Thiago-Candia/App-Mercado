@@ -1,0 +1,21 @@
+
+
+
+
+/* ===== CONTENEDOR PRINCIPAL ===== */
+.home-screen {
+  min-height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.home-screen-article {
+  display: flex;
+  max-width: 1400px;
+  margin: 25px auto;
+  padding: 0 20px;
+  gap: 25px;
+  align-items: flex-start;
+}
+
+
+
