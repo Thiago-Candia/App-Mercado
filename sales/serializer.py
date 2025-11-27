@@ -1,11 +1,21 @@
 from typing import Required
 from rest_framework import serializers
-from .models import Venta, Caja, Cliente, DetalleVenta, Product
-from sucursal.models import Empleado
+from .models import Venta, Caja, Cliente, DetalleVenta, Empleado, Product
 from rest_framework.decorators import action
 from django.db import transaction
 
 class CajaSerializer(serializers.ModelSerializer):
+    empleado = serializers.StringRelatedField(read_only=True)
+    class Meta:
+        model = Caja
+        fields = ['empleado','numeroCaja', 'estado']
+        extra_kwargs= {
+        "fecha": {"read_only": True},
+        "estado":{"read_only": True},
+        "numeroCaja":{"read_only": True}
+    }
+
+class IngresarEmpleadoCajaSerializer(serializers.ModelSerializer):
     empleado = serializers.StringRelatedField(read_only=True)
     empleado_id = serializers.PrimaryKeyRelatedField(
     queryset=Empleado.objects.all(),
@@ -14,12 +24,43 @@ class CajaSerializer(serializers.ModelSerializer):
     )
     class Meta:
         model = Caja
-        fields = ['numeroCaja', 'empleado', 'empleado_id', 'apertura', 'cierre']
+        fields = ['empleado_id', 'empleado']
+
+class CajaAperturaSerializer(serializers.ModelSerializer):
+    apertura = serializers.DateField(required=False)
+    monto_apertura = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        required = True
+    )
+    monto_retirado = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        required = True
+    )
+    class Meta:
+        model = Caja
+        fields = ['apertura', 'monto_apertura', 'monto_retirado']
         extra_kwargs= {
-        "fecha": {"read_only": True},
-        "apertura":{"read_only": True},
-        "cierre":{"read_only": True}
-    }
+        "apertura": {"read_only": True}
+        }
+
+class CajaCierreSerializer(serializers.ModelSerializer):
+    cierre = serializers.DateField(required=False)
+    monto_cierre = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        required = True
+    )
+    monto_retirado = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        required = True
+    )
+    class Meta:
+        model = Caja
+        fields = ['cierre', 'monto_cierre', 'monto_retirado']
+
 
 class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -140,7 +181,10 @@ class VentasPorDiaSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Venta
-        fields = ['fecha_filtrada', 'detalles', 'info', 'total']
+        fields = ['caja_id', 'caja','fecha_filtrada', 'detalles', 'info', 'total', 'metodo_pago']
+        extra_kwargs= {
+            "metodo_pago": {"write_only": True}
+        }
 
 
 class VentasPorMesSerializer(serializers.ModelSerializer):
@@ -159,4 +203,8 @@ class VentasPorMesSerializer(serializers.ModelSerializer):
         return obj.calcular_total()
     class Meta:
         model = Venta
-        fields = ['anio_filtrada', 'mes_filtrada', 'detalles', 'info', 'total']
+        fields = ['anio_filtrada', 'mes_filtrada', 'detalles', 'info', 'total', 'metodo_pago']
+        extra_kwargs= {
+            "metodo_pago": {"write_only": True}
+        }
+

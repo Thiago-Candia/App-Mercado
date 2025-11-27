@@ -15,19 +15,25 @@ class Cliente(models.Model):
 
 
 class Caja(models.Model):
-    numeroCaja = models.IntegerField(unique=True)
-    empleado = models.OneToOneField(Empleado, on_delete=models.DO_NOTHING)
-    fecha=models.DateField(auto_now_add=True)
+    numeroCaja = models.IntegerField(unique=True, null=True)
+    empleado = models.ForeignKey(Empleado, on_delete=models.DO_NOTHING)
+    fecha = models.DateField(auto_now_add=True, null=True, blank=True)
     apertura = models.TimeField(blank=True, null=True)
     cierre = models.TimeField(blank=True, null=True) 
     class Estado(models.TextChoices):
         ACTIVA = 'ACT', 'Activa'
         CERRADA = 'CER', 'Cerrada'
     estado = models.CharField(max_length=3, choices=Estado.choices)
+    historial_cierres = models.JSONField(default=list)
     def get_empleado(self):
         return self.empleado 
     def get_numeroCaja(self):
         return self.numeroCaja
+    def save(self, *args, **kwargs):
+        if not self.numeroCaja:
+            ultimo_numeroCaja = Caja.objects.all().order_by('-numeroCaja').first()
+            self.numeroCaja = (ultimo_numeroCaja.numeroCaja + 1) if ultimo_numeroCaja else 1
+        super().save(*args, **kwargs)
     def __str__(self):
         return f'NUMERO CAJA: {self.numeroCaja} - EMPLEADO: {self.empleado}' 
 
