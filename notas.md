@@ -24,3 +24,40 @@ base de datos se llenará de "IDs huérfanos"
 CASCADE -> CASCADE Si se borra un producto, borra el ID de ese producto en la DetalleVenta
 
 PROTECT -> PROTECT Si se borra un producto, no deja el ID de ese producto en la DetalleVenta, y lanza una excepción.
+
+El Context API de React es una herramienta que permite pasar datos a través del árbol de componentes sin tener que pasar props manualmente en cada nivel. Se utiliza para compartir información como el estado global, el tema, el idioma o el usuario autenticado, a la que varios componentes pueden acceder sin una cadena de prop-drilling. React proporciona React.createContext() para crear el contexto y useContext (un hook) para que los componentes lo consuman. 
+
+
+
+
+
+
+
+
+
+
+
+## 📝 Próximos Pasos (Opcionales)
+
+- [ ] Agregar autenticación de usuarios
+- [ ] Implementar historial de compras
+- [ ] Agregar reportes de ventas
+- [ ] Sistema de descuentos
+- [ ] Notificaciones por email
+- [ ] Modo oscuro
+- [ ] Multi-idioma
+- [ ] Búsqueda avanzada
+- [ ] Filtros por precio
+- [ ] Reviews de productos
+
+---
+
+## 🎉 CONCLUSIÓN
+
+**Tu proyecto está completamente funcional y listo para usar.**
+
+Todo está integrado:
+✅ Frontend - Carrito visual
+✅ Backend - APIs funcionando
+✅ Base de datos - Guardando datos
+✅ Documentación - Completa

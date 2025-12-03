@@ -51,3 +51,29 @@
   font-style: normal;
   font-size: 16px;
 }
+
+/* ===== CARRITO BOTÓN ===== */
+
+.cart-button {
+  padding: 10px 18px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.cart-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+}
+
+.cart-button:active {
+  transform: translateY(0);
+}

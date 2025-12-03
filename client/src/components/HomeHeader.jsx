@@ -2,7 +2,6 @@ import React from 'react'
 import '../styles/styles.css'
 
 
-
 const HomeHeader = () => {
     return (
     <header className='header-home'>

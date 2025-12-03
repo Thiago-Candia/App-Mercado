@@ -1,0 +1,133 @@
+/* ===== CAJA MANAGER ===== */
+.caja-manager {
+    background: white;
+    border: 2px solid #667eea;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.caja-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.caja-form h3 {
+    color: #667eea;
+    margin: 0;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.btn-abrir {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-abrir:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-abrir:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Caja Activa */
+.caja-activa {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.status-active {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-badge {
+    background: #4CAF50;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.caja-info {
+    background: #f0f4ff;
+    padding: 15px;
+    border-radius: 6px;
+    border-left: 4px solid #667eea;
+}
+
+.caja-info p {
+    margin: 8px 0;
+    color: #2c3e50;
+}
+
+.btn-cerrar {
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-cerrar:hover {
+    background: #ee5a52;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+}
+
+.btn-cerrar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.error-message {
+    background: #ffe0e0;
+    color: #c33;
+    padding: 12px 15px;
+    border-radius: 6px;
+    border-left: 4px solid #ff6b6b;
+    margin-bottom: 15px;
+}

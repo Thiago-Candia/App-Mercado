@@ -5,26 +5,31 @@ from sucursal.models import Empleado
 from rest_framework.decorators import action
 from django.db import transaction
 
+
+
+
 class CajaSerializer(serializers.ModelSerializer):
     empleado = serializers.StringRelatedField(read_only=True)
     empleado_id = serializers.PrimaryKeyRelatedField(
-    queryset=Empleado.objects.all(),
-    source='empleado',
-    write_only=True
+        queryset=Empleado.objects.all(),
+        source='empleado',
+        write_only=True
     )
     class Meta:
         model = Caja
-        fields = ['numeroCaja', 'empleado', 'empleado_id', 'apertura', 'cierre']
+        fields = ['id', 'numeroCaja', 'empleado', 'empleado_id', 'apertura', 'cierre', 'estado', 'fecha']
         extra_kwargs= {
-        "fecha": {"read_only": True},
-        "apertura":{"read_only": True},
-        "cierre":{"read_only": True}
+            "fecha": {"read_only": True}
     }
+
+
 
 class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cliente
         fields = ['nombre','dni']
+
+
 
 class CobrarSerializer(serializers.Serializer):
     venta_id = serializers.PrimaryKeyRelatedField(
@@ -38,6 +43,9 @@ class CobrarSerializer(serializers.Serializer):
         required=True
     )
 
+
+
+
 class DescuentoSerializer(serializers.Serializer):
     venta_id = serializers.PrimaryKeyRelatedField(
     queryset=Venta.objects.all(),
@@ -47,6 +55,8 @@ class DescuentoSerializer(serializers.Serializer):
     descuento = serializers.IntegerField(
     required=False
     )
+
+
 
 class VentaSerializer(serializers.ModelSerializer):
     caja = serializers.StringRelatedField(read_only=True)
@@ -94,6 +104,9 @@ class VentaSerializer(serializers.ModelSerializer):
             "total": {"read_only": True},
             "numero_venta":{"read_only": True}
         }
+
+
+
 class DescuentoUnitarioSerializer(serializers.Serializer):
     detalleventa_id = serializers.PrimaryKeyRelatedField(
     queryset=Venta.objects.all(),
@@ -103,6 +116,7 @@ class DescuentoUnitarioSerializer(serializers.Serializer):
     descuento = serializers.IntegerField(
     required=False
     )
+
 
 
 class DetalleVentaSerializer(serializers.ModelSerializer):

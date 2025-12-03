@@ -10,6 +10,8 @@ router.register(r'cliente', views.ClienteViewSet, basename='cliente')
 router.register(r'venta', views.VentaViewSet, basename='venta')
 router.register(r'detalleventa', views.DetalleVentaViewSet, basename='detalleventa')
 
+
 urlpatterns = [
     path('api/', include(router.urls)),
+    path('http://localhost:8000/ventas/api/', include(router.urls)),
 ]

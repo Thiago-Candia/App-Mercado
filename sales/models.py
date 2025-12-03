@@ -1,6 +1,5 @@
 from _winapi import NULL
 from django.db import models, transaction
-
 from sucursal.models import Empleado
 from products.models import Product
 from decimal import Decimal

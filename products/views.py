@@ -7,13 +7,13 @@ from .models import Product, Catalogo, CategoriaProducto, SubCategoriaProducto
 from rest_framework.decorators import action
 from django.db import transaction
 
-from django.db.models import Q
 
 
 """ PARA BUSCAR PRODUCTOS POR NOMBRE """
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import filters
+from django.db.models import Q
 
 # Create your views here.
 
@@ -69,7 +69,12 @@ class ProductViewSet(viewsets.ModelViewSet):
         return Response({'producto' : product}) """
 
 
-""" FUNCION GLOBAL PARA BUSCAR PRODUCTOS POR NOMBRE """
+""" 
+FUNCION GLOBAL PARA BUSCAR PRODUCTOS POR NOMBRE
+Q -> query set models de django
+Si lo que se ingresa en la query es igual al nombre/codigo devuelve el producto
+"""
+
 @api_view(['GET'])
 def buscar_productos(request):
     query = request.GET.get('search', '').strip()
