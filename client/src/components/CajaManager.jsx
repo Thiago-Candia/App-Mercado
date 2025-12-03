@@ -62,12 +62,27 @@ const CajaManager = ({ onCajaChange }) => {
             const caja = await abrirCaja(empleadoSeleccionado, parseInt(numeroCaja))
             setCajaActiva(caja)
             onCajaChange(caja)
+        
+            //Guardar en localStorage
+            localStorage.setItem('empleado_id', empleadoSeleccionado)
+            localStorage.setItem('caja_id', caja.id)
+            localStorage.setItem('caja_numero', caja.numeroCaja)
+            
+            console.log('✅ Datos guardados en localStorage:', {
+                empleado_id: empleadoSeleccionado,
+                caja_id: caja.id,
+                caja_numero: caja.numeroCaja
+            })
+
             setError('')
             alert(`✅ Caja ${caja.numeroCaja} abierta exitosamente`)
-        } catch (err) {
+        
+        } 
+        catch (err) {
             console.error('Error:', err)
             setError(err.response?.data?.error || 'Error al abrir caja')
-        } finally {
+        } 
+        finally {
             setLoading(false)
         }
     }

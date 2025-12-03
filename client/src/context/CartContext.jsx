@@ -1,55 +1,63 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 
+
+// Creacion del contexto -> util para acceder al carrito
 const CartContext = createContext()
 
+
+// Hook para acceder al carrito
 export const useCart = () => {
-  const context = useContext(CartContext)
-  if (!context) {
+    const context = useContext(CartContext)
+    if (!context) {
     throw new Error('useCart debe usarse dentro de CartProvider')
-  }
-  return context
+    }
+    return context
 }
 
 export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState([])
-  const [isCartOpen, setIsCartOpen] = useState(false)
 
-  // Cargar carrito del localStorage al iniciar
-  useEffect(() => {
+    // Estado para el carrito
+    const [cart, setCart] = useState([])
+    // Estado para controlar si el carrito está abierto
+    const [isCartOpen, setIsCartOpen] = useState(false)
+
+    // Cargar carrito del localStorage al iniciar
+    useEffect(() => {
     const savedCart = localStorage.getItem('cart')
     if (savedCart) {
-      setCart(JSON.parse(savedCart))
+        setCart(JSON.parse(savedCart))
     }
-  }, [])
+    }, [])
 
-  // Guardar carrito en localStorage cuando cambie
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart))
-  }, [cart])
+    // Guardar carrito en localStorage cuando cambie
+    useEffect(() => {
+        localStorage.getItem('cart', JSON.stringify(cart))
+    }, [cart])
 
-  // Agregar producto al carrito
-  const addToCart = (product) => {
-    setCart(prevCart => {
-      const existingItem = prevCart.find(item => item.id === product.id)
-      
-      if (existingItem) {
-        // Si el producto ya existe, incrementar cantidad
-        return prevCart.map(item =>
-          item.id === product.id
-            ? { ...item, cantidad: item.cantidad + 1 }
-            : item
-        )
-      } else {
-        // Si es nuevo, agregarlo con cantidad 1
-        return [...prevCart, { ...product, cantidad: 1 }]
-      }
-    })
-  }
+    // Agregar producto al carrito
+    const addToCart = (product) => {
+        setCart(prevCart => {
+            const existingItem = prevCart.find(item => item.id === product.id)
+        
+            if (existingItem) {
+            // Si el producto ya existe, incrementar cantidad
+            return prevCart.map(item =>
+                item.id === product.id
+                ? { ...item, cantidad: item.cantidad + 1 }
+                : item
+            )
+            } 
+            else {
+                // Si es nuevo, agregarlo con cantidad 1
+                return [...prevCart, { ...product, cantidad: 1 }]
+            }
+        })
+    }
 
   // Remover producto del carrito
-  const removeFromCart = (productId) => {
-    setCart(prevCart => prevCart.filter(item => item.id !== productId))
-  }
+    const removeFromCart = (productId) => {
+        setCart(prevCart => prevCart.filter(item => item.id !== productId))
+    }
 
   // Actualizar cantidad de un producto
   const updateQuantity = (productId, newQuantity) => {
