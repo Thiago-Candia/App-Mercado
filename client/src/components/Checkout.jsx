@@ -41,14 +41,15 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
             }
 
 
-
-            // Usar los datos de localStorage
+        // Usar los datos de localStorage
             setCajaActiva({
                 id: parseInt(cajaId),
                 empleado_id: parseInt(empleadoId)
             })
         }
     }, [cajaActiva])
+
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
@@ -57,6 +58,7 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
             [name]: value
         }))
     }
+
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -89,9 +91,8 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
         setError('')
 
         try {
-            // 1. Crear cliente si existe
             let clienteId = null
-            if (formData.cliente_nombre && formData.cliente_dni) {
+            if (formData.cliente_nombre.trim() && formData.cliente_dni.trim()) {
                 console.log('👤 Creando cliente...')
                 const cliente = await createCliente({
                     nombre: formData.cliente_nombre,
@@ -101,7 +102,6 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
                 console.log('✅ Cliente creado:', cliente)
             }
 
-            // 2. Crear venta
             console.log('📄 Creando venta...')
             const ventaData = {
                 caja_id: cajaActiva.id,
@@ -113,6 +113,7 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
 
             const venta = await procesarVentaCompleta(ventaData)
             
+            console.log('🔍 venta.id:', venta.id)  // ← VERIFICAR
             console.log('✅ Venta creada:', venta)
 
             // 3. Crear detalles de venta
@@ -139,11 +140,13 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
             clearCart()
             navigate('/')
             
-        } catch (err) {
+        } 
+        catch (err) {
             console.error('❌ Error completo:', err)
             console.error('❌ Respuesta del servidor:', err.response?.data)
             setError(err.response?.data?.error || 'Error al procesar la compra')
-        } finally {
+        } 
+        finally {
             setLoading(false)
         }
     }

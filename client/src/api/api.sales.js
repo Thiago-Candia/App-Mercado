@@ -60,6 +60,7 @@ export const createVenta = async (ventaData) => {
         return response.data
     } catch (error) {
         console.error('Error al crear venta:', error)
+        console.error(response.data)
         throw error
     }
 }
@@ -168,16 +169,6 @@ export const obtenerEmpleados = async () => {
     }
 }
 
-export const procesarVentaCompleta = async (ventaData) => {
-    try {
-        const response = await salesApi.post('/venta/', ventaData)
-        return response.data
-    } catch (error) {
-        console.error('Error al procesar venta:', error)
-        throw error
-    }
-}
-
 
 
 
@@ -188,11 +179,27 @@ export const createDetalleVenta = async (detalleData) => {
     try {
         const response = await salesApi.post('/detalleventa/', detalleData)
         return response.data
-    } catch (error) {
+    } 
+    catch (error) {
         console.error('Error al crear detalle de venta:', error)
         throw error
     }
 }
+
+
+
+export const procesarVentaCompleta = async (ventaData) => {
+    try {
+        const response = await salesApi.post('/venta/', ventaData)
+        return response.data
+    } 
+    catch (error) {
+        console.error('Error al procesar venta:', error)
+        throw error
+    }
+}
+
+
 
 // ===== FILTRAR VENTAS =====
 
@@ -224,53 +231,3 @@ export const filtrarVentasPorMes = async (anio, mes) => {
 }
 
 
-
-
-
-// ===== FUNCIÓN COMPLETA PARA PROCESAR VENTA =====
-/* export const procesarVentaCompleta = async (cartItems, formData) => {
-    try {
-        // 1. Crear o buscar cliente (si proporcionó datos)
-        let clienteId = null
-        if (formData.cliente_nombre && formData.cliente_dni) {
-            const cliente = await createCliente({
-                nombre: formData.cliente_nombre,
-                dni: parseInt(formData.cliente_dni)
-            })
-            clienteId = cliente.id
-        }
-
-        // 2. Crear la venta
-        const ventaData = {
-            caja_id: formData.caja_id,
-            ...(clienteId && { cliente_id: clienteId })
-        }
-        const venta = await createVenta(ventaData)
-
-        // 3. Crear detalles de venta para cada producto
-        for (const item of cartItems) {
-            await createDetalleVenta({
-                venta_id: venta.numero_venta,
-                producto_id: item.id,
-                cantidad: item.cantidad,
-                descuento: 0
-            })
-        }
-
-        // 4. Cobrar la venta
-        const cobrarData = {
-            venta_id: venta.numero_venta,
-            monto_recibido: parseFloat(formData.monto_recibido),
-            descuento: 0
-        }
-        const resultadoCobro = await cobrarVenta(venta.numero_venta, cobrarData)
-
-        return {
-            venta,
-            cobro: resultadoCobro
-        }
-    } catch (error) {
-        console.error('Error al procesar venta completa:', error)
-        throw error
-    }
-} */
