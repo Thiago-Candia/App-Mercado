@@ -56,17 +56,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         producto.stock = nuevo_stock
         producto.save()
         return Response({'stock': nuevo_stock})
-    
-"""     @action(detail=False, methods=['get', 'post'], serializer_class=CodigoSerializer)
-    def buscar_producto(self, request, pk=None):
-        serializer = CodigoSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  
-        codigo_filtrado = serializer.validated_data['codigo_filtrado']
-        producto = self.get_queryset().get(codigo=codigo_filtrado)
-        product_serializer = ProductSerializer(producto)
-        product = product_serializer.data
-        return Response({'producto' : product}) """
+
 
 
 """ 

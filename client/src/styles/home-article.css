@@ -27,12 +27,3 @@
   position: relative;
 }
 
-/* Agregamos los iconos de flecha negra */
-.catalogo-list li::before {
-  content: "▶";
-  font-size: 10px;
-  position: absolute;
-  left: 0;
-  top: 3px;
-  color: #000;
-}

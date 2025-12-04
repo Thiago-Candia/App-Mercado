@@ -10,12 +10,21 @@ from decimal import Decimal
 from datetime import date
 from django.utils import timezone
 
+
+
+
 class CajaViewSet(viewsets.ModelViewSet):
     serializer_class = CajaSerializer
     queryset = Caja.objects.all()
 
+
+
     @action(detail=False, methods=['post'])
     def abrir_caja(self, request):
+        """
+        POST /ventas/api/caja/abrir_caja/
+        Body: { "empleado_id": 1, "numeroCaja": 1 }
+        """
         empleado_id = request.data.get('empleado_id')
         numero_caja = request.data.get('numeroCaja')
         
@@ -64,6 +73,8 @@ class CajaViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+
+
     @action(detail=True, methods=['post'])
     def cerrar_caja(self, request, pk=None):
         """
@@ -84,6 +95,8 @@ class CajaViewSet(viewsets.ModelViewSet):
         
         serializer = CajaSerializer(caja)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 
     @action(detail=False, methods=['get'])
     def obtener_caja_activa(self, request):
@@ -122,6 +135,8 @@ class VentaViewSet(viewsets.ModelViewSet):
     serializer_class = VentaSerializer
     queryset = Venta.objects.all()
 
+
+
     @action(detail=True, methods=['post', 'get'], serializer_class=DescuentoSerializer)
     @transaction.atomic
     def hacer_descuento(self, request, pk=Venta.pk):
@@ -138,22 +153,25 @@ class VentaViewSet(viewsets.ModelViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
     @action(detail=True, methods=['post', 'GET'], serializer_class=CobrarSerializer)
     @transaction.atomic
     def cobrar_venta(self, request, pk=Venta.pk):
         venta = self.get_object()
 
         if venta.estado_venta == Venta.estadoVenta.FINALIZADA:
-            return Response({'error': 'Venta ya cobrada'}, status=400)
+            return Response({'error': 'Venta ya cobrada'}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = CobrarSerializer(data=request.data)
         if serializer.is_valid():
             monto_recibido = serializer.validated_data['monto_recibido']
             total_venta = venta.calcular_total()
-            descuento = serializer.validated_data['descuento']
+            descuento = serializer.validated_data.get('descuento', 0)
 
             if monto_recibido >= total_venta:
-                for detalle in venta.detalles.all():
+                # Obtener detalles de venta usando DetalleVenta
+                detalles = DetalleVenta.objects.filter(venta=venta)
+                for detalle in detalles:
                     producto = detalle.producto 
                     producto.stock -= detalle.cantidad
                     producto.save()
@@ -170,7 +188,7 @@ class VentaViewSet(viewsets.ModelViewSet):
                 return Response({'status': 'pago insuficiente'}, status=status.HTTP_400_BAD_REQUEST)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 
     @action(detail=False, methods=['get','POST'], serializer_class=VentasPorDiaSerializer)
     def filtrar_ventas(self, request, pk=None):
@@ -218,6 +236,7 @@ class VentaViewSet(viewsets.ModelViewSet):
             'total_mes': float(total_mes),
             'ventas': detalles
         }, status=status.HTTP_200_OK)
+
 
 
 class DetalleVentaViewSet(viewsets.ModelViewSet):

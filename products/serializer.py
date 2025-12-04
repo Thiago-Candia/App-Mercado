@@ -43,6 +43,19 @@ class ProductSerializer(serializers.ModelSerializer):
         source='subcategoria',
         write_only=True
     )
+    # Campo para retornar la URL completa de la imagen
+    image = serializers.SerializerMethodField()
+    
+    def get_image(self, obj):
+        if obj.image:
+            request = self.context.get('request')
+            # La imagen está en media/products/imagenes/
+            image_url = f'/media/products/imagenes/{obj.image.name.split("/")[-1]}'
+            if request:
+                return request.build_absolute_uri(image_url)
+            return image_url
+        return None
+    
     class Meta:
         model = Product
         fields = '__all__'

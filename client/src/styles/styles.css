@@ -110,7 +110,9 @@ body {
 
 
 
-/* Barra de búsqueda */
+
+/* BARRA DE BUSQUEDA */
+
 .search-bar {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   padding: 25px;
@@ -217,7 +219,9 @@ body {
 }
 
 
-/* ===== MEJORES SERVICIOS (SIDEBAR DERECHO) ===== */
+
+/* SIDEBAR CAJA */
+
 .home-screen-component:last-child {
   flex: 0 0 320px;
   background: white;
@@ -237,7 +241,13 @@ body {
   border-bottom: 3px solid #667eea;
 }
 
-/* Estilos para items de mejores servicios */
+
+
+
+
+
+
+/* items de mejores servicios */
 .best-services-list {
   display: flex;
   flex-direction: column;
@@ -300,6 +310,14 @@ body {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+
+
+
+
+
+
+
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1200px) {

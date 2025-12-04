@@ -127,8 +127,17 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
+""" Archivos estaticos -> css, js, imagenes, etc """
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+
+# Media files (User uploaded files)
+""" Archivos de media -> imagenes, videos, etc """
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -137,7 +146,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
-""" Cors authorization quien se puede conectar a nuestra app """
+""" 
+
+Cors authorization quien se puede conectar a nuestra app 
+5173 => PUERTO DE REACT
+"""
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173'
 ]

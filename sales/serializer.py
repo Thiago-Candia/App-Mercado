@@ -18,39 +18,39 @@ class CajaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Caja
         fields = ['id', 'numeroCaja', 'empleado', 'empleado_id', 'apertura', 'cierre', 'estado', 'fecha']
-        extra_kwargs= {
+        extra_kwargs = {
             "fecha": {"read_only": True}
-    }
-
-
+        }
 
 class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cliente
-        fields = ['nombre','dni']
+        fields = ['id', 'nombre', 'dni']
 
 
+
+""" 
+Serializer para cobrar una venta y aplicar descuentos.
+Se Elimino el campo venta_id porque la venta viene en la URL, no en el body.
+"""
 
 class CobrarSerializer(serializers.Serializer):
-    venta_id = serializers.PrimaryKeyRelatedField(
-    queryset=Venta.objects.all(),
-    source='venta',
-    write_only=True
-    )
-    monto_recibido=serializers.DecimalField(
+    monto_recibido = serializers.DecimalField(
         max_digits=10,
         decimal_places=2,
         required=True
     )
-
-
+    descuento = serializers.IntegerField(
+        required=False,
+        default=0
+    )
 
 
 class DescuentoSerializer(serializers.Serializer):
     venta_id = serializers.PrimaryKeyRelatedField(
-    queryset=Venta.objects.all(),
-    source='venta',
-    write_only=True
+        queryset=Venta.objects.all(),
+        source='venta',
+        write_only=True
     )
     descuento = serializers.IntegerField(
     required=False
@@ -73,6 +73,8 @@ class VentaSerializer(serializers.ModelSerializer):
         required=False
     )
     total = serializers.SerializerMethodField()
+
+
     def get_total(self, obj):
         try:
             if obj.total > 0:
@@ -81,25 +83,31 @@ class VentaSerializer(serializers.ModelSerializer):
                 return obj.calcular_total() if obj.pk else []
         except Exception:
             return 0
-    
+
+
     detalles = serializers.SerializerMethodField()
     def get_detalles(self, obj):
         return obj.mostrar_detalle() if obj.pk else []
-    
+
+
     fecha = serializers.SerializerMethodField()
     def get_fecha(self, obj):
         return obj.mostrar_hora()
-    
+
+
     metodo_pago = serializers.SerializerMethodField()
     def get_metodo_pago(self, obj):
         return obj.mostrar_pago()
-    
+
+
     estado_venta = serializers.SerializerMethodField()
     def get_estado_venta(self, obj):
         return obj.estado_venta
+
+
     class Meta:
         model = Venta
-        fields = ['caja_id', 'caja', 'cliente_id', 'cliente', 'numero_venta', 'total', 'detalles', 'fecha', 'metodo_pago', 'estado_venta'] 
+        fields = ['id', 'caja_id', 'caja', 'cliente_id', 'cliente', 'numero_venta', 'total', 'detalles', 'fecha', 'metodo_pago', 'estado_venta'] 
         extra_kwargs= {
             "total": {"read_only": True},
             "numero_venta":{"read_only": True}
@@ -137,7 +145,8 @@ class DetalleVentaSerializer(serializers.ModelSerializer):
         return obj.subtotal()
     class Meta:
         model = DetalleVenta
-        fields = ['venta_id','venta', 'producto','producto_id', 'cantidad', 'descuento', 'subtotal']
+        fields = ['venta_id','venta', 'producto','producto_id', 'cantidad', 'descuento', 'subtotal', 'precio_unitario']
+        read_only_fields = ['subtotal', 'venta']
 
 
 class VentasPorDiaSerializer(serializers.ModelSerializer):

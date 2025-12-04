@@ -13,5 +13,4 @@ router.register(r'detalleventa', views.DetalleVentaViewSet, basename='detalleven
 
 urlpatterns = [
     path('api/', include(router.urls)),
-    path('http://localhost:8000/ventas/api/', include(router.urls)),
 ]

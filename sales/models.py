@@ -14,19 +14,27 @@ class Cliente(models.Model):
 
 
 class Caja(models.Model):
-    numeroCaja = models.IntegerField(unique=True)
-    empleado = models.OneToOneField(Empleado, on_delete=models.DO_NOTHING)
+    numeroCaja = models.IntegerField()
+    empleado = models.ForeignKey(Empleado , on_delete=models.PROTECT, related_name='cajas')
     fecha=models.DateField(auto_now_add=True)
     apertura = models.TimeField(blank=True, null=True)
     cierre = models.TimeField(blank=True, null=True) 
+
     class Estado(models.TextChoices):
         ACTIVA = 'ACT', 'Activa'
         CERRADA = 'CER', 'Cerrada'
+    
     estado = models.CharField(max_length=3, choices=Estado.choices)
+
+
     def get_empleado(self):
-        return self.empleado 
+        return self.empleado
+
+
     def get_numeroCaja(self):
         return self.numeroCaja
+
+
     def __str__(self):
         return f'NUMERO CAJA: {self.numeroCaja} - EMPLEADO: {self.empleado}' 
 
@@ -38,23 +46,30 @@ class Venta(models.Model):
     hora = models.TimeField(auto_now_add=True)
     cliente = models.ForeignKey(Cliente, on_delete=models.DO_NOTHING, null=True, blank=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+
     class metodoPago(models.TextChoices):
         EFECTIVO = 'EFE', 'Efectivo'
         CREDITO = 'CRE', 'Credito'
         DEBITO = 'DEB', 'Debito'
         TRASNFERENCIA = 'TRA', 'Transferencia'
     metodo_pago = models.CharField(max_length=3, choices=metodoPago.choices, default=metodoPago.EFECTIVO)
+
+
     class estadoVenta(models.TextChoices):
         FINALIZADA = "FIN", 'Finalizada',
         EN_PROCESO = "PRC", 'En proceso',
         PENDIENTE = 'PEN', 'Pendiente'
     estado_venta = models.CharField(max_length=3, choices=estadoVenta.choices, default=estadoVenta.PENDIENTE)
+
+
     def save(self, *args, **kwargs):
         if not self.numero_venta:
             ultima_venta = Venta.objects.all().order_by('-numero_venta').first()
             self.numero_venta = (ultima_venta.numero_venta + 1) if ultima_venta else 1
         super().save(*args, **kwargs)
-        
+
+
     def convertir_fecha(self, anio, mes):
         return self.objects.filter(fecha__year=anio, fecha__month=mes)
 
