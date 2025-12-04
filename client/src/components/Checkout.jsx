@@ -1,8 +1,9 @@
-// Checkout.jsx
 import React, { useState, useEffect } from 'react'
 import { useCart } from '../context/CartContext'
 import { useNavigate } from 'react-router-dom'
 import { procesarVentaCompleta, createCliente, createDetalleVenta, cobrarVenta } from '../api/api.sales'
+import '../styles/checkout.css'
+import ModalCheckout from './ModalCheckout'
 
 const Checkout = ({ cajaActiva: cajaActivaProp }) => {
 
@@ -26,6 +27,8 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [cajaActiva, setCajaActiva] = useState(cajaActivaProp || null)
+    const [showSuccessModal, setShowSuccessModal] = useState(false)
+    const [ventaCompletada, setVentaCompletada] = useState(null)
 
 
 
@@ -49,6 +52,11 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
         }
     }, [cajaActiva])
 
+
+
+    const handleCloseModal = () => {
+        setShowSuccessModal(false)
+    }
 
 
     const handleInputChange = (e) => {
@@ -113,10 +121,10 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
 
             const venta = await procesarVentaCompleta(ventaData)
             
-            console.log('🔍 venta.id:', venta.id)  // ← VERIFICAR
+            console.log('🔍 venta.id:', venta.id)
             console.log('✅ Venta creada:', venta)
 
-            // 3. Crear detalles de venta
+            // Crear detalles de venta
             console.log('📦 Creando detalles...')
             for (const item of cart) {
                 await createDetalleVenta({
@@ -128,7 +136,7 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
                 console.log('✅ Detalle creado para:', item.name)
             }
 
-            // 4. Cobrar la venta
+            // Cobrar la venta
             console.log('💰 Cobrando venta...')
             await cobrarVenta(venta.id, {
                 monto_recibido: montoRecibido,
@@ -136,10 +144,16 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
             })
 
             console.log('✅ Compra completada exitosamente')
-            alert('✅ Compra realizada exitosamente')
-            clearCart()
-            navigate('/')
             
+            // Guardar datos de la venta para mostrar en el modal
+            setVentaCompletada({
+                total: total,
+                cambio: montoRecibido - total,
+                items: cart.length
+            })
+            
+            // Mostrar modal de éxito
+            setShowSuccessModal(true)
         } 
         catch (err) {
             console.error('❌ Error completo:', err)
@@ -153,6 +167,7 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
 
     const total = getTotal()
 
+
     return (
         <div className="checkout-container">
             <div className="checkout-wrapper">
@@ -160,12 +175,7 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
 
                 {/* Mostrar información de la caja */}
                 {cajaActiva && (
-                    <div style={{ 
-                        background: '#d4edda', 
-                        padding: '10px', 
-                        borderRadius: '5px',
-                        marginBottom: '20px'
-                    }}>
+                    <div className="caja-active-badge">
                         <strong>🟢 Caja Activa:</strong> Caja #{localStorage.getItem('caja_numero')}
                     </div>
                 )}
@@ -198,13 +208,7 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
                         <h2>Datos de Pago</h2>
                         
                         {error && (
-                            <div className="checkout-error" style={{
-                                background: '#f8d7da',
-                                color: '#721c24',
-                                padding: '10px',
-                                borderRadius: '5px',
-                                marginBottom: '15px'
-                            }}>
+                            <div className="checkout-error">
                                 {error}
                             </div>
                         )}
@@ -273,12 +277,7 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
                                 </div>
 
                                 {formData.monto_recibido && (
-                                    <div className="checkout-change" style={{
-                                        background: '#d1ecf1',
-                                        padding: '10px',
-                                        borderRadius: '5px',
-                                        marginTop: '10px'
-                                    }}>
+                                    <div className="checkout-change">
                                         <strong>Cambio: ${(parseFloat(formData.monto_recibido) - total).toFixed(2)}</strong>
                                     </div>
                                 )}
@@ -305,6 +304,13 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
                     </div>
                 </div>
             </div>
+            
+            <ModalCheckout
+                showSuccessModal={showSuccessModal}
+                ventaCompletada={ventaCompletada}
+                onClose={() => setShowSuccessModal(false)}
+            />
+            
         </div>
     )
 }

@@ -75,6 +75,7 @@ def buscar_productos(request):
     productos = Product.objects.filter(
         Q(name__icontains=query) | Q(codigo__icontains=query)
     )
-    serializer = ProductSerializer(productos, many=True)
+    # se pasa el contexto del request para construir URLs absoluta
+    serializer = ProductSerializer(productos, many=True, context={'request': request})
     return Response(serializer.data)
 

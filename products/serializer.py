@@ -3,10 +3,15 @@ from rest_framework import serializers
 from .models import Product
 from .models import Product, Catalogo, CategoriaProducto, SubCategoriaProducto
 
+
+
+
 class CatalogoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Catalogo
         fields = '__all__'
+
+
 
 class CategoriaSerializer(serializers.ModelSerializer):
     catalogo = serializers.StringRelatedField(read_only=True)
@@ -19,6 +24,8 @@ class CategoriaSerializer(serializers.ModelSerializer):
         model = CategoriaProducto
         fields = '__all__'
 
+
+
 class SubCategoriaSerializer(serializers.ModelSerializer):
     categoria = serializers.StringRelatedField(read_only=True)
     categoria_id = serializers.PrimaryKeyRelatedField(
@@ -30,14 +37,19 @@ class SubCategoriaSerializer(serializers.ModelSerializer):
         model = SubCategoriaProducto
         fields = '__all__'
 
+
+
 class ProductSerializer(serializers.ModelSerializer):
     categoria = serializers.StringRelatedField(read_only=True)
+
     categoria_id = serializers.PrimaryKeyRelatedField(
         queryset=CategoriaProducto.objects.all(),
         source='categoria',
         write_only=True
     )
     subcategoria = serializers.StringRelatedField()
+
+
     subcategoria_id = serializers.PrimaryKeyRelatedField(
         queryset=SubCategoriaProducto.objects.all(),
         source='subcategoria',
@@ -45,15 +57,17 @@ class ProductSerializer(serializers.ModelSerializer):
     )
     # Campo para retornar la URL completa de la imagen
     image = serializers.SerializerMethodField()
-    
+
+
     def get_image(self, obj):
         if obj.image:
             request = self.context.get('request')
             # La imagen está en media/products/imagenes/
             image_url = f'/media/products/imagenes/{obj.image.name.split("/")[-1]}'
-            if request:
+            if obj.image and request:
                 return request.build_absolute_uri(image_url)
-            return image_url
+            else:
+                return image_url
         return None
     
     class Meta:

@@ -3,6 +3,10 @@ import { abrirCaja, cerrarCaja, obtenerCajaActiva, obtenerEmpleados } from '../a
 import '../styles/caja-manager.css'
 
 const CajaManager = ({ onCajaChange }) => {
+
+
+
+
     const [empleados, setEmpleados] = useState([])
     const [cajaActiva, setCajaActiva] = useState(null)
     const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState('')
@@ -10,13 +14,16 @@ const CajaManager = ({ onCajaChange }) => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
 
+
+
     // Cargar empleados al montar el componente
     useEffect(() => {
         const loadEmpleados = async () => {
             try {
                 const data = await obtenerEmpleados()
                 setEmpleados(data)
-            } catch (err) {
+            } 
+            catch (err) {
                 console.error('Error cargando empleados:', err)
                 setError('Error al cargar empleados')
             }
@@ -34,12 +41,14 @@ const CajaManager = ({ onCajaChange }) => {
                         setCajaActiva(caja)
                         setNumeroCaja(caja.numeroCaja)
                         onCajaChange(caja)
-                    } else {
+                    } 
+                    else {
                         setCajaActiva(null)
                         setNumeroCaja('')
                         onCajaChange(null)
                     }
-                } catch (err) {
+                } 
+                catch (err) {
                     console.error('Error verificando caja:', err)
                 }
             }
@@ -103,10 +112,12 @@ const CajaManager = ({ onCajaChange }) => {
             setNumeroCaja('')
             onCajaChange(null)
             alert('✅ Caja cerrada exitosamente')
-        } catch (err) {
+        } 
+        catch (err) {
             console.error('Error:', err)
             setError(err.response?.data?.error || 'Error al cerrar caja')
-        } finally {
+        } 
+        finally {
             setLoading(false)
         }
     }
