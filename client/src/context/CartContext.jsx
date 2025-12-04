@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react'
 
 
 // Creacion del contexto -> util para acceder al carrito
+//Un context en react es un objeto que permite compartir datos entre componentes sin pasar props
 const CartContext = createContext()
 
 
@@ -54,26 +55,26 @@ export const CartProvider = ({ children }) => {
         })
     }
 
-  // Remover producto del carrito
+    // Remover producto del carrito
     const removeFromCart = (productId) => {
         setCart(prevCart => prevCart.filter(item => item.id !== productId))
     }
 
-  // Actualizar cantidad de un producto
-  const updateQuantity = (productId, newQuantity) => {
+    // Actualizar cantidad de un producto
+    const updateQuantity = (productId, newQuantity) => {
     if (newQuantity <= 0) {
-      removeFromCart(productId)
-      return
+        removeFromCart(productId)
+        return
     }
 
     setCart(prevCart =>
-      prevCart.map(item =>
+        prevCart.map(item =>
         item.id === productId
-          ? { ...item, cantidad: newQuantity }
-          : item
-      )
+            ? { ...item, cantidad: newQuantity }
+            : item
+        )
     )
-  }
+    }
 
   // Incrementar cantidad
   const incrementQuantity = (productId) => {
