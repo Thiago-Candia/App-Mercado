@@ -8,30 +8,33 @@ import Checkout from './components/Checkout.jsx'
 import { CartProvider } from './context/CartContext.jsx'
 import './styles/styles.css'
 import CheckoutGuard from './components/CheckoutGuard.jsx'
+import { ToastProvider } from './context/ToastContext.jsx'
 
 
 function App() {
 
 
   return (
-  <CartProvider>
-    <BrowserRouter>
-      <div className='container'>
-        <Routes>
-          <Route path='/' element={<HomeScreen/>}/>
-          <Route path='/product/:id' element={<ProductPage/>}/>
-          <Route path='/sales/:id' element={<ProductPage/>} />
-          <Route path='/checkout' 
-            element={
-            <CheckoutGuard>
-              <Checkout/>
-            </CheckoutGuard>
-              } 
-            />
-        </Routes>
-      </div>
-    </BrowserRouter>
-  </CartProvider>
+  <ToastProvider>
+    <CartProvider>
+      <BrowserRouter>
+        <div className='container'>
+          <Routes>
+            <Route path='/' element={<HomeScreen/>}/>
+            <Route path='/product/:id' element={<ProductPage/>}/>
+            <Route path='/sales/:id' element={<ProductPage/>} />
+            <Route path='/checkout' 
+              element={
+              <CheckoutGuard>
+                <Checkout/>
+              </CheckoutGuard>
+                } 
+              />
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </CartProvider>
+  </ToastProvider>
   )
 }
 
