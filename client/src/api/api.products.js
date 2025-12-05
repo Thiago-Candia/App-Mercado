@@ -37,6 +37,11 @@ export const getCategoria = (id) => productsApi.get(`/categoria/${id}/`)
 
 export const createCategoria = (data) => productsApi.post('/categoria/', data)
 
+// client/src/api/api.products.js
+
+// CORRECCIÓN: Cambiamos '?categoriaProducto=' por '?categoria='
+export const getProductsByCategory = (id) => productsApi.get(`/products/?categoria=${id}`)
+
 export const updateCategoria = (id, data) => productsApi.put(`/categoria/${id}/`, data)
 
 export const deleteCategoria = (id) => productsApi.delete(`/categoria/${id}/`)

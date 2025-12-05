@@ -10,6 +10,8 @@ const Toast = ({ message, type = 'success', duration = 3000, onClose }) => {
         return () => clearTimeout(timer)
     }, [duration, onClose])
 
+
+    /* renderizacion del toast */
     return (
         <div className={`toast toast-${type}`}>
             <span className="toast-icon">

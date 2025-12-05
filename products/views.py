@@ -2,11 +2,26 @@ from django.shortcuts import render
 from rest_framework import viewsets, status
 from .serializer import ProductSerializer
 from .models import Product
-from .serializer import ProductSerializer, CatalogoSerializer, CategoriaSerializer, ProductoStockNuevoSerializer ,SubCategoriaSerializer, ProductoPrecioNuevoSerializer, CodigoSerializer
-from .models import Product, Catalogo, CategoriaProducto, SubCategoriaProducto
 from rest_framework.decorators import action
 from django.db import transaction
+from django_filters.rest_framework import DjangoFilterBackend
 
+from .serializer import (
+    ProductSerializer, 
+    CatalogoSerializer, 
+    CategoriaSerializer, 
+    ProductoStockNuevoSerializer,
+    SubCategoriaSerializer, 
+    ProductoPrecioNuevoSerializer, 
+    CodigoSerializer
+)
+
+from .models import (
+    Product, 
+    Catalogo, 
+    CategoriaProducto, 
+    SubCategoriaProducto
+)
 
 
 """ PARA BUSCAR PRODUCTOS POR NOMBRE """
@@ -15,23 +30,32 @@ from rest_framework.response import Response
 from rest_framework import filters
 from django.db.models import Q
 
-# Create your views here.
+
 
 class CatalogoViewSet(viewsets.ModelViewSet):
     serializer_class = CatalogoSerializer
     queryset = Catalogo.objects.all()
 
+
+
 class CategoriaViewSet(viewsets.ModelViewSet):
     serializer_class = CategoriaSerializer
     queryset = CategoriaProducto.objects.all()
+
+
 
 class SubCategoriaViewSet(viewsets.ModelViewSet):
     serializer_class = SubCategoriaSerializer
     queryset = SubCategoriaProducto.objects.all()
 
+
+
 class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
+    # habilitacion uso de filtro con django_filters
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['categoria', 'subcategoria']
 
     @transaction.atomic
     @action(detail=True, methods=['get','post'], serializer_class=ProductoPrecioNuevoSerializer)
@@ -45,6 +69,8 @@ class ProductViewSet(viewsets.ModelViewSet):
         producto.save()
         return Response({'precio': nuevo_precio})
 
+
+
     @transaction.atomic
     @action(detail=True, methods=['get','post'], serializer_class=ProductoStockNuevoSerializer)
     def cambiar_stock(self, request, pk=Product.pk):
@@ -56,7 +82,6 @@ class ProductViewSet(viewsets.ModelViewSet):
         producto.stock = nuevo_stock
         producto.save()
         return Response({'stock': nuevo_stock})
-
 
 
 """ 
@@ -75,7 +100,7 @@ def buscar_productos(request):
     productos = Product.objects.filter(
         Q(name__icontains=query) | Q(codigo__icontains=query)
     )
-    # se pasa el contexto del request para construir URLs absoluta
+    # se pasa el contexto del request para construir URL absoluta
     serializer = ProductSerializer(productos, many=True, context={'request': request})
     return Response(serializer.data)
 

@@ -1,9 +1,12 @@
 import decimal
 from rest_framework import serializers
 from .models import Product
-from .models import Product, Catalogo, CategoriaProducto, SubCategoriaProducto
-
-
+from .models import (
+    Product, 
+    Catalogo, 
+    CategoriaProducto, 
+    SubCategoriaProducto
+)
 
 
 class CatalogoSerializer(serializers.ModelSerializer):

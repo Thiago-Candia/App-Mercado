@@ -4,8 +4,24 @@ from django.db.models import Sum
 from rest_framework.response import Response
 from rest_framework import viewsets, serializers, status
 from rest_framework.decorators import action
-from .serializer import VentasPorMesSerializer, CajaSerializer, VentaSerializer, ClienteSerializer, DetalleVentaSerializer, DescuentoUnitarioSerializer, CobrarSerializer, VentasPorDiaSerializer, DescuentoSerializer
-from .models import Cliente, Caja, Venta, DetalleVenta
+
+from .serializer import (
+    VentasPorMesSerializer, 
+    CajaSerializer, 
+    VentaSerializer, 
+    ClienteSerializer, 
+    DetalleVentaSerializer, 
+    DescuentoUnitarioSerializer, 
+    CobrarSerializer, 
+    VentasPorDiaSerializer, 
+    DescuentoSerializer
+)
+from .models import (
+    Cliente, 
+    Caja, 
+    Venta, 
+    DetalleVenta
+)
 from decimal import Decimal
 from datetime import date
 from django.utils import timezone

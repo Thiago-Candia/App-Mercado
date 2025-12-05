@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'django_filters',
     'core',
     'products',
     'sales',
@@ -114,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 """ IDIOMA """
 
-LANGUAGE_CODE = 'es'
+LANGUAGE_CODE = 'es-ar'
 
 """ ZONA HORARIA """
 
