@@ -20,7 +20,7 @@ const CheckoutGuard = ({ children }) => {
                 console.log('🔍 Verificando caja activa para empleado:', empleadoId)
 
                 if (!empleadoId) {
-                    alert('⚠️ No hay empleado seleccionado. Por favor, abre una caja primero.')
+                    alert('No hay empleado seleccionado. Por favor, abre una caja primero.')
                     navigate('/')
                     return
                 }
@@ -28,10 +28,10 @@ const CheckoutGuard = ({ children }) => {
                 // Verificar si hay caja activa
                 const caja = await obtenerCajaActiva(empleadoId)
                 
-                console.log('📦 Caja obtenida:', caja)
+                console.log('caja obtenida:', caja)
 
                 if (!caja) {
-                    alert('⚠️ No hay ninguna caja activa. Por favor, abre una caja primero.')
+                    alert('No hay ninguna caja activa. Por favor, abre una caja primero.')
                     navigate('/')
                     return
                 }
@@ -39,8 +39,8 @@ const CheckoutGuard = ({ children }) => {
                 setCajaActiva(caja)
                 setLoading(false)
             } catch (err) {
-                console.error('❌ Error verificando caja:', err)
-                alert('Error al verificar la caja. Por favor, intenta de nuevo.')
+                console.error('error verificando caja:', err)
+                alert('error al verificar la caja. por favor, intenta de nuevo.')
                 navigate('/')
             }
         }

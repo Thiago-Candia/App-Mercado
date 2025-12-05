@@ -7,20 +7,111 @@ from django.db import transaction
 
 
 
+class CajaListSerializer(serializers.ModelSerializer):
+    empleado = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Caja
+        fields = ['id', 'numeroCaja', 'estado']
+        read_only_fields = ['empleado_nombre']
+
+    def get_empleado_nombre(self, obj):
+        if obj.empleado:
+            return f"{obj.empeleado.nombre} {obj.empleado.apellido}"
+        return None
+
+
 
 class CajaSerializer(serializers.ModelSerializer):
     empleado = serializers.StringRelatedField(read_only=True)
-    empleado_id = serializers.PrimaryKeyRelatedField(
-        queryset=Empleado.objects.all(),
-        source='empleado',
-        write_only=True
-    )
+    apertura = serializers.SerializerMethodField()
+    cierre = serializers.SerializerMethodField()
+    
     class Meta:
         model = Caja
-        fields = ['id', 'numeroCaja', 'empleado', 'empleado_id', 'apertura', 'cierre', 'estado', 'fecha']
-        extra_kwargs = {
-            "fecha": {"read_only": True}
+        fields = ['id', 'empleado','numeroCaja', 'estado', 'apertura', 'cierre']
+        extra_kwargs= {
+            "fecha": {"read_only": True},
+            "estado":{"read_only": True},
+            "numeroCaja":{"read_only": True},
         }
+    
+    def get_apertura(self, obj):
+        """Formatea la hora de apertura en formato HH:MM:SS"""
+        if obj.apertura:
+            return obj.apertura.strftime('%H:%M')
+        return None
+    
+    def get_cierre(self, obj):
+        """Formatea la hora de cierre en formato HH:MM:SS"""
+        if obj.cierre:
+            return obj.cierre.strftime('%H:%M')
+        return None
+
+
+
+
+class AsignarEmpleadoSerializer(serializers.Serializer):
+    """Serializer para asignar empleado a una caja"""
+    empleado_id = serializers.IntegerField()
+    
+    def validate_empleado_id(self, value):
+        try:
+            Empleado.objects.get(id=value)
+        except Empleado.DoesNotExist:
+            raise serializers.ValidationError("El empleado no existe")
+        return value
+
+
+
+class AbrirCajaSerializer(serializers.Serializer):
+    """Serializer para abrir una caja"""
+    monto_apertura = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        required=True
+    )
+    monto_retirado = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        required=False,
+        default=0
+    )
+
+
+
+class CerrarCajaSerializer(serializers.Serializer):
+    """Serializer para cerrar una caja"""
+    monto_cierre = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        required=True
+    )
+    monto_retirado = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        required=False,
+        default=0
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class ClienteSerializer(serializers.ModelSerializer):
     class Meta:

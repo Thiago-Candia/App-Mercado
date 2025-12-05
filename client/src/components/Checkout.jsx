@@ -71,9 +71,9 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         
-        console.log('🛒 Iniciando compra...')
-        console.log('📦 Carrito:', cart)
-        console.log('🏦 Caja activa:', cajaActiva)
+        console.log('iniciando compra...')
+        console.log('carrito:', cart)
+        console.log('caja activa:', cajaActiva)
         
         // Validaciones
         if (!cart || cart.length === 0) {
@@ -82,7 +82,7 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
         }
 
         if (!cajaActiva || !cajaActiva.id) {
-            alert('No hay ninguna caja activa. Por favor, abre una caja primero.')
+            alert('no hay ninguna caja activa. Por favor, abre una caja primero.')
             navigate('/')
             return
         }
@@ -91,7 +91,7 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
         const montoRecibido = parseFloat(formData.monto_recibido)
 
         if (!montoRecibido || montoRecibido < total) {
-            setError('El monto recibido es insuficiente')
+            setError('el monto recibido es insuficiente')
             return
         }
 
@@ -101,31 +101,31 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
         try {
             let clienteId = null
             if (formData.cliente_nombre.trim() && formData.cliente_dni.trim()) {
-                console.log('👤 Creando cliente...')
+                console.log('creando cliente')
                 const cliente = await createCliente({
                     nombre: formData.cliente_nombre,
                     dni: parseInt(formData.cliente_dni)
                 })
                 clienteId = cliente.id
-                console.log('✅ Cliente creado:', cliente)
+                console.log('cliente creado:', cliente)
             }
 
-            console.log('📄 Creando venta...')
+            console.log('creando la venta')
             const ventaData = {
                 caja_id: cajaActiva.id,
                 cliente_id: clienteId,
                 metodo_pago: formData.metodo_pago
             }
             
-            console.log('📄 Datos de venta:', ventaData)
+            console.log('datos de venta:', ventaData)
 
             const venta = await procesarVentaCompleta(ventaData)
             
-            console.log('🔍 venta.id:', venta.id)
-            console.log('✅ Venta creada:', venta)
+            console.log('venta.id:', venta.id)
+            console.log('venta creada:', venta)
 
             // Crear detalles de venta
-            console.log('📦 Creando detalles...')
+            console.log('creando detalles...')
             for (const item of cart) {
                 await createDetalleVenta({
                     venta_id: venta.id,
@@ -133,17 +133,17 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
                     cantidad: item.quantity || item.cantidad,
                     precio_unitario: item.price
                 })
-                console.log('✅ Detalle creado para:', item.name)
+                console.log('detalle creado para:', item.name)
             }
 
             // Cobrar la venta
-            console.log('💰 Cobrando venta...')
+            console.log('cobrando venta...')
             await cobrarVenta(venta.id, {
                 monto_recibido: montoRecibido,
                 descuento: 0
             })
 
-            console.log('✅ Compra completada exitosamente')
+            console.log('compra completada exitosamente')
             
             // Guardar datos de la venta para mostrar en el modal
             setVentaCompletada({
@@ -156,8 +156,8 @@ const Checkout = ({ cajaActiva: cajaActivaProp }) => {
             setShowSuccessModal(true)
         } 
         catch (err) {
-            console.error('❌ Error completo:', err)
-            console.error('❌ Respuesta del servidor:', err.response?.data)
+            console.error('error completo:', err)
+            console.error('respuesta del servidor:', err.response?.data)
             setError(err.response?.data?.error || 'Error al procesar la compra')
         } 
         finally {

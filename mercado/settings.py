@@ -114,11 +114,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 """ IDIOMA """
 
-LANGUAGE_CODE = 'en-US'
+LANGUAGE_CODE = 'es'
 
 """ ZONA HORARIA """
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Argentina/Buenos_Aires'
 
 USE_I18N = True
 

@@ -9,6 +9,7 @@ from .models import Cliente, Caja, Venta, DetalleVenta
 from decimal import Decimal
 from datetime import date
 from django.utils import timezone
+from django.conf import settings
 
 
 
@@ -47,20 +48,25 @@ class CajaViewSet(viewsets.ModelViewSet):
                     status=status.HTTP_400_BAD_REQUEST
                 )
             
-            # Buscar o crear la caja
+            # buscar o crear la caja y obtener hora actual en la zona horaria configurada
+            ahora = timezone.now()
+            hora_argentina = ahora.astimezone(timezone.get_current_timezone()).time()
+            
             caja, created = Caja.objects.get_or_create(
                 numeroCaja=numero_caja,
                 empleado_id=empleado_id,
                 defaults={
                     'estado': 'ACT',
-                    'apertura': timezone.now().time()
+                    'apertura': hora_argentina
                 }
             )
             
             if not created:
                 # Si ya existe, activarla
+                ahora = timezone.now()
+                hora_argentina = ahora.astimezone(timezone.get_current_timezone()).time()
                 caja.estado = 'ACT'
-                caja.apertura = timezone.now().time()
+                caja.apertura = hora_argentina
                 caja.cierre = None
                 caja.save()
             
@@ -89,8 +95,12 @@ class CajaViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
+        # Obtener hora actual en la zona horaria configurada
+        ahora = timezone.now()
+        hora_argentina = ahora.astimezone(timezone.get_current_timezone()).time()
+        
         caja.estado = 'CER'
-        caja.cierre = timezone.now().time()
+        caja.cierre = hora_argentina
         caja.save()
         
         serializer = CajaSerializer(caja)
