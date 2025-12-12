@@ -17,6 +17,8 @@ class CategoriaProducto(models.Model):
     def __str__(self):
         return self.name
 
+
+
 class SubCategoriaProducto(models.Model):
     name = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -25,6 +27,8 @@ class SubCategoriaProducto(models.Model):
     
     def __str__(self):
         return self.name
+
+
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
@@ -37,11 +41,13 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     categoria = models.ForeignKey(CategoriaProducto, related_name='productos', on_delete=models.DO_NOTHING) 
     subcategoria = models.ForeignKey(SubCategoriaProducto, related_name='productos', on_delete=models.DO_NOTHING, blank=True)
-    
+
+
     @property   
     def precio_formateado(self):
         return f"${self.price:,.2f}"
-    
+
+
     @property
     def esta_disponible(self):
         return self.stock > 0 and f'{self.stock}'

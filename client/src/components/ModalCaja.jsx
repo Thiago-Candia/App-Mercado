@@ -1,6 +1,8 @@
 import React from 'react'
 import '../styles/checkout.css'
 
+
+
 const ModalCaja = ({ showModal, modalData, onClose }) => {
     if (!showModal || !modalData) return null
 
@@ -11,7 +13,7 @@ const ModalCaja = ({ showModal, modalData, onClose }) => {
             <div className="modal-success" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-success-icon">
                     {isAbrirCaja ? (
-                        // Ícono de Caja Abierta
+                        // Ícono de caja Abierta
                         <div className="success-checkmark">
                             <div className="check-icon" style={{ borderColor: '#4BB543' }}>
                                 <span className="icon-line line-tip"></span>
@@ -21,7 +23,7 @@ const ModalCaja = ({ showModal, modalData, onClose }) => {
                             </div>
                         </div>
                     ) : (
-                        // Ícono de Caja Cerrada
+                        // icono de caja cerrada 
                         <div className="success-checkmark">
                             <div className="check-icon" style={{ borderColor: '#dc3545' }}>
                                 <span className="icon-line line-tip" style={{ backgroundColor: '#dc3545' }}></span>

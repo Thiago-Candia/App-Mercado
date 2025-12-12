@@ -77,26 +77,32 @@ class Venta(models.Model):
     def get_info_venta(self):
         return f'VENTA N°: {self.numero_venta} - FECHA: {self.fecha} - HORA: {self.hora} - CLIENTE: {self.cliente} - METODO PAGO: {self.metodo_pago}'
 
+
     @property
     def set_cliente(self):
         return self.cliente   
+
 
     def calcular_total(self):
         total = sum(detalle.subtotal() for detalle in self.detalles.all())
         return total
 
+
     def mostrar_detalle(self):
         return (detalle.get_detalle() for detalle in self.detalles.all())
-    
+
+
     def mostrar_hora(self):
         return f'{self.fecha} {self.hora}'
-    
+
+
     def mostrar_pago(self):
         return (self.metodo_pago)
-    
+
+
     def __str__(self):
         return f"{self.numero_venta}"
-    
+
 
 
 class DetalleVenta(models.Model):

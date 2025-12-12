@@ -3,6 +3,7 @@ import Toast from '../components/Toast'
 
 const ToastContext = createContext()
 
+// Hook para acceder al toast
 export const useToast = () => {
     const context = useContext(ToastContext)
     if (!context) {
@@ -11,6 +12,7 @@ export const useToast = () => {
     return context
 }
 
+// Proveedor del toast
 export const ToastProvider = ({ children }) => {
     const [toast, setToast] = useState(null)
 
@@ -18,9 +20,11 @@ export const ToastProvider = ({ children }) => {
         setToast({ message, type, duration })
     }
 
+    // Funcion para ocultar el toast
     const hideToast = () => {
         setToast(null)
     }
+
 
     return (
         <ToastContext.Provider value={{ showToast, hideToast }}>

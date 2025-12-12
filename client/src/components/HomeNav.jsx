@@ -5,7 +5,9 @@ import { useCart } from '../context/CartContext'
 
 
 const HomeNav = () => {
+
     const { isCartOpen } = useCart()
+
 
     return (
         <>

@@ -57,6 +57,8 @@ class ProductViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['categoria', 'subcategoria']
 
+
+
     @transaction.atomic
     @action(detail=True, methods=['get','post'], serializer_class=ProductoPrecioNuevoSerializer)
     def cambiar_precio(self, request, pk=Product.pk):

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { obtenerCajaActiva } from '../api/api.sales'
 
 
-// sCOMPONENTE PARA VERFICIAR SI HAY CAJA ABIERTA
+// COMPONENTE PARA VERFICIAR SI HAY CAJA ABIERTA
 
 const CheckoutGuard = ({ children }) => {
     const [cajaActiva, setCajaActiva] = useState(null)

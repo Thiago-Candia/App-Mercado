@@ -88,7 +88,7 @@ class CajaViewSet(viewsets.ModelViewSet):
             
             serializer = CajaSerializer(caja)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-            
+        
         except Exception as e:
             return Response(
                 {'error': str(e)},
@@ -161,8 +161,7 @@ class VentaViewSet(viewsets.ModelViewSet):
     serializer_class = VentaSerializer
     queryset = Venta.objects.all()
 
-
-
+    """ Funcion para hacer descuento """
     @action(detail=True, methods=['post', 'get'], serializer_class=DescuentoSerializer)
     @transaction.atomic
     def hacer_descuento(self, request, pk=Venta.pk):
@@ -180,6 +179,7 @@ class VentaViewSet(viewsets.ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+    """ Funcion para cobrar venta """
     @action(detail=True, methods=['post', 'GET'], serializer_class=CobrarSerializer)
     @transaction.atomic
     def cobrar_venta(self, request, pk=Venta.pk):
@@ -216,6 +216,7 @@ class VentaViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
     @action(detail=False, methods=['get','POST'], serializer_class=VentasPorDiaSerializer)
     def filtrar_ventas(self, request, pk=None):
         serializer = VentasPorDiaSerializer(data=request.data)
@@ -234,7 +235,8 @@ class VentaViewSet(viewsets.ModelViewSet):
             ventas_count = len(detalles)
             total_dia = sum(venta.calcular_total() for venta in ventas)
             return Response({'fecha': fecha_filtrada, 'cantidad_ventas': ventas_count, 'ventas': detalles, 'total del dia' : total_dia}, status=status.HTTP_200_OK)
-    
+
+
 
     @action(detail=False, methods=['get', 'post'], serializer_class=VentasPorMesSerializer)
     def filtra_mes(self, request, pk=None):
@@ -249,7 +251,6 @@ class VentaViewSet(viewsets.ModelViewSet):
         
         if ventas.count() == 0:
             return Response({'status': 'fecha sin venta'}, status=status.HTTP_204_NO_CONTENT)
-
         venta_serializer = self.get_serializer(ventas, many=True)
         detalles = venta_serializer.data
         ventas_count = len(detalles)
